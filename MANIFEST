@@ -1,0 +1,13 @@
+Build.PL
+Changes
+lib/DumBot
+lib/Net/IRC2.pm
+lib/Net/IRC2/Connection.pm
+lib/Net/IRC2/Event.pm
+Makefile.PL
+MANIFEST
+META.yml			# Will be created by "make dist"
+README
+t/00-load.t
+t/pod-coverage.t
+t/pod.t
