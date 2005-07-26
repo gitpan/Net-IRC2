@@ -13,42 +13,63 @@ our @EXPORT_OK = qw( new      ) ;
 our @Export    = qw( new      ) ;
 
 use vars qw( $VERSION $DEBUG )  ;
-$VERSION = '0.00_03'            ;
-$DEBUG   = 10                   ;
+$VERSION =                             '0.00_04' ;
+$DEBUG   =                   10 ;
 
 =head1 NAME
 
-Net::IRC2 - The great new Net::IRC2!
+Net::IRC2 - Client interface to the Internet Relay Chat protocol.
 
-=head1 VERSION
+=cut
+#=head1 VERSION
 
-Version 0.00_03
+#This is the documentation for the Version 0.00_04 of Net::IRC2 , released July 26, 2005.
+
+=pod
 
 =head1 SYNOPSIS
 
-OO module to manage IRC connection.
+ use Net::IRC2                                                        ;
+ my $bot  = new Net::IRC2                                             ;
+ my $conn = $bot->newconn( uri => 'irc://Nick!User@localhost:6667/' ) ; 
+ $conn->mode(    $conn->nick, '+B' )                                  ;
+ $conn->mode(    '#Ailleurs +m'    )                                  ;
+ $bot->callback( \&process_event   )                                  ;
+ $bot->start                                                          ;
+ ...
 
-    use Net::IRC2                                                        ;
+=head1 DESCRIPTION
 
-    my $bot  = new Net::IRC2                                             ;
-    my $conn = $bot->newconn( uri => 'irc://Nick!User@localhost:6667/' ) ;
-
-    $conn->mode(    $conn->nick,'+B' )                                   ;
-    $bot->callback( \&process_event  )                                   ;
-    $bot->start                                                          ;
-    ...
+This module will provide you an access to the IRC protocol suitable to write your own IRC-Bots, or your
+IRC Client. The API will provide you the sames functions than Net::IRC, so change should be trivial.
 
 =head1 FUNCTIONS
 
-=head2 new
-=head2 newconn
-=head2 callback
-=head2 start
+=over
+
+=item new
+
+The constructor, takes no argument. Return a Net::IRC2 object. It's your IRC-Bot.
+
+=cut
+
+sub new         { shift and return bless {@_} } ;
+
+=pod
+
+=item newconn
+
+Make a new connection. Like Net::IRC + can process an URI : irc://Nick!User@localhost:6667/ 
+
+=item callback
+
+=item start
+
+=back
 
 =cut
 
 
-sub new         { shift and return bless {@_} }
 
 sub newconn     {
     use Net::IRC2::Connection;
@@ -92,7 +113,7 @@ sub irc_grammar { local $/ ; return <DATA> ; }
 
 =head1 AUTHOR
 
-Karl Y. Pradene, C<< <knotty@cpan.org> >>
+Karl Y. Pradene, C<< <knotty@cpan.org>, irc://knotty@freenode.org/ >> 
 
 =head1 BUGS
 
@@ -102,12 +123,11 @@ L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Net-IRC2>.
 I will be notified, and then you'll automatically be notified of progress on
 your bug as I make changes.
 
-=head1 ACKNOWLEDGEMENTS
-
 =head1 SEE ALSO
 
-Net::IRC
-POE::Component::IRC
+Perl modules working with IRC connections: Net::IRC, POE::Component::IRC
+
+IRC Request For Comment 1459 L<http://www.ietf.org/rfc/rfc1459.txt?number=1459>
 
 =head1 COPYRIGHT & LICENSE
 
@@ -115,20 +135,21 @@ Copyright 2005, Karl Y. Pradene <knotty@cpan.org> All rights reserved.
 
 This program is released under the following license: GPL v2
 
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License version 2 as
-published by the Free Software Foundation.
+This program is free software; you can redistribute it and/or modify it under the terms
+of the GNU General Public License version 2 as published by the Free Software Foundation.
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
+You should have received a copy of the GNU General Public License along with this program;
+if not, write to the 
 
-See <http://www.fsf.org/licensing/licenses/gpl.html>
+ Free Software Foundation,
+ Inc., 51 Franklin St, Fifth Floor,
+ Boston, MA  02110-1301 USA
+
+See L<http://www.fsf.org/licensing/licenses/gpl.html>
 
 =cut
 

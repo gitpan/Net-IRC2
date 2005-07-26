@@ -16,11 +16,11 @@ our @EXPORT_OK = qw( new      ) ;
 our @Export    = qw( new      ) ;
 
 use vars qw( $VERSION )         ;
-$VERSION = '0.00_03'            ;
+$VERSION =                          '0.00_04' ;
 
 my $DEBUG = 10 ;
-$::RD_HINT  =   $DEBUG        ? 1 : undef     ;
-$::RD_TRACE = ( $DEBUG > 10 ) ? 1 : undef     ;
+$::RD_HINT  =   $DEBUG         ? 1 : undef    ;
+$::RD_TRACE = ( $DEBUG >= 10 ) ? 1 : undef    ;
 
 
 sub new {

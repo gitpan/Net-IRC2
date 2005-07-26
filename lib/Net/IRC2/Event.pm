@@ -12,7 +12,7 @@ our @EXPORT_OK = qw( new      ) ;
 our @Export    = qw( new      ) ;
 
 use vars qw( $VERSION )         ;
-$VERSION = '0.00_03'            ;
+$VERSION =                          '0.00_04' ;
 
 sub new        { shift and return bless { @_, 'timestamp'=>time }              }
 
@@ -30,11 +30,10 @@ sub dump       {
           ' Middle   : ' .   $self->middle.                  "\n"              . 
           ' Trailing : ' .   $self->trailing.              "\n\n"              ;
                                                                                }
-
-
  ##########
 # Accessor #
  ##########
+sub time       { return $_[0]->{'timestamp' }                                  }
 sub orig       { return $_[0]->{   'orig'   }                                  }
 sub prefix     { return $_[0]->{  'prefix'  } = $_[1] || $_[0]->{  'prefix  '} }
 
@@ -43,17 +42,16 @@ sub nick       { return $_[0]->{   'nick'   } = $_[1] || $_[0]->{   'nick'   } }
 sub user       { return $_[0]->{   'user'   } = $_[1] || $_[0]->{   'user'   } }
 sub host       { return $_[0]->{   'host'   } = $_[1] || $_[0]->{   'host'   } }
 
-sub command    { return $_[0]->{'command'}    = $_[1] || $_[0]->{'command'}    }
+sub command    { return $_[0]->{ 'command'  } = $_[1] || $_[0]->{ 'command'  } }
 
 sub middle     {
-    $_[0]->{'middle'}    = $_[1] || $_[0]->{'middle'}   || 'NOMIDDLE'          ;
+    $_[0]->{ 'middle'  } = $_[1] || $_[0]->{'middle'}   || 'NOMIDDLE'          ;
     return ( wantarray ) ? $_[0]->{'middle'}   : "@{$_[0]->{'middle'}}"        ;
 }
 sub trailing   {
-    $_[0]->{'trailing'}  = $_[1] || $_[0]->{'trailing'} || 'NOTRAILING'        ;
+    $_[0]->{'trailing' } = $_[1] || $_[0]->{'trailing'} || 'NOTRAILING'        ;
     return ( wantarray ) ? $_[0]->{'trailing'} : "@{$_[0]->{'trailing'}}"      ;
                                                                                }
-sub time       { return $_[0]->{'timestamp'}                                   }
-sub userhost   { warn 'TODO: userhost for Event'                               }
+sub userhost   { warn 'TODO: userhost for '. ref $_[0]                         }
 
 1;

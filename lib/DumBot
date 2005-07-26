@@ -14,7 +14,7 @@ sub p($) { print "@_\n" }
 
 my $bot = new Net::IRC2;
 
-my $conn = $bot->newconn(uri=>'irc://B1-66ER!void@sd839.sivit.org:6667/') || die 'No Connection';
+my $conn = $bot->newconn(uri=>'irc://B1-66ER!void@irc.geeknode.org:6667/') || die 'No Connection';
 $conn->mode($conn->nick,'+B');
 my $sock = $conn->socket;
 
