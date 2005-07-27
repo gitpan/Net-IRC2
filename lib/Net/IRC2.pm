@@ -13,63 +13,11 @@ our @EXPORT_OK = qw( new      ) ;
 our @Export    = qw( new      ) ;
 
 use vars qw( $VERSION $DEBUG )  ;
-$VERSION =                             '0.00_04' ;
+$VERSION =                             '0.01' ;
 $DEBUG   =                   10 ;
 
-=head1 NAME
-
-Net::IRC2 - Client interface to the Internet Relay Chat protocol.
-
-=cut
-#=head1 VERSION
-
-#This is the documentation for the Version 0.00_04 of Net::IRC2 , released July 26, 2005.
-
-=pod
-
-=head1 SYNOPSIS
-
- use Net::IRC2                                                        ;
- my $bot  = new Net::IRC2                                             ;
- my $conn = $bot->newconn( uri => 'irc://Nick!User@localhost:6667/' ) ; 
- $conn->mode(    $conn->nick, '+B' )                                  ;
- $conn->mode(    '#Ailleurs +m'    )                                  ;
- $bot->callback( \&process_event   )                                  ;
- $bot->start                                                          ;
- ...
-
-=head1 DESCRIPTION
-
-This module will provide you an access to the IRC protocol suitable to write your own IRC-Bots, or your
-IRC Client. The API will provide you the sames functions than Net::IRC, so change should be trivial.
-
-=head1 FUNCTIONS
-
-=over
-
-=item new
-
-The constructor, takes no argument. Return a Net::IRC2 object. It's your IRC-Bot.
-
-=cut
 
 sub new         { shift and return bless {@_} } ;
-
-=pod
-
-=item newconn
-
-Make a new connection. Like Net::IRC + can process an URI : irc://Nick!User@localhost:6667/ 
-
-=item callback
-
-=item start
-
-=back
-
-=cut
-
-
 
 sub newconn     {
     use Net::IRC2::Connection;
@@ -110,6 +58,68 @@ sub irc_grammar { local $/ ; return <DATA> ; }
 
 1; # End of Net::IRC2
 
+
+
+=head1 NAME
+
+Net::IRC2 - Client interface to the Internet Relay Chat protocol.
+
+!!! UNDER PROGRAMMING !!! Wait a moment, please hold the line ...
+
+=cut
+
+#=head1 VERSION
+
+#This is the documentation for the Version 0.00_04 of Net::IRC2 , released July 26, 2005.
+
+=pod
+
+=head1 SYNOPSIS
+
+ use Net::IRC2                                                        ;
+ my $bot  = new Net::IRC2                                             ;
+ my $conn = $bot->newconn( uri => 'irc://Nick!User@localhost:6667/' ) ; 
+ $conn->mode(    $conn->nick, '+B' )                                  ;
+ $conn->mode(    '#Ailleurs +m'    )                                  ;
+ $bot->callback( \&process_event   )                                  ;
+ $bot->start                                                          ;
+ ...
+
+=head1 DESCRIPTION
+
+This module will provide you an access to the IRC protocol suitable to write your own IRC-Bots, or your
+IRC Client. The API will provide you the sames functions than Net::IRC, so change should be trivial.
+This module C<use L<Parse::RecDescent>;> , of Dr. Conway Damian 
+
+=head1 FUNCTIONS
+
+=over
+
+=item new
+
+The constructor, takes no argument. Return a Net::IRC2 object. It's your IRC-Bot.
+
+=cut
+
+
+=pod
+
+=item newconn
+
+Make a new connection. Like Net::IRC + can process a home-made tasty pseudo-URI :
+irc://Nick!User@localhost:6667/ . Yummy.
+
+=item callback
+
+=item start
+
+=item add_handler
+
+=item connections
+
+=item irc_grammar
+
+=back
 
 =head1 AUTHOR
 
@@ -164,7 +174,7 @@ See L<http://www.fsf.org/licensing/licenses/gpl.html>
 
 
 #------------------------
-# The IRC grammar
+# IRC grammar
 # Read by sub irc_grammar
 #
 

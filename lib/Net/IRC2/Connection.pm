@@ -16,9 +16,9 @@ our @EXPORT_OK = qw( new      ) ;
 our @Export    = qw( new      ) ;
 
 use vars qw( $VERSION )         ;
-$VERSION =                          '0.00_04' ;
+$VERSION =                          '0.01' ;
 
-my $DEBUG = 10 ;
+my $DEBUG = 5 ;
 $::RD_HINT  =   $DEBUG         ? 1 : undef    ;
 $::RD_TRACE = ( $DEBUG >= 10 ) ? 1 : undef    ;
 
@@ -48,11 +48,12 @@ sub start {
 	    $sock->send( 'PONG ' . $sock->sockhost . ' ' . $event->middle. "\n" );
 	}
 	next if $event->command eq '372' and $DEBUG ;
-	$event->dump if $DEBUG ;
+	$event->dump if $DEBUG > 5 ;
 	if ( $event->command eq '001' ) {
 	    $parser->Replace( "servername: '" . $event->servername . "'" ) ;
 	}
-	$self->callback( $event ) ;
+	( defined $self->{'callback'}{$event->command} ) ?
+	    &{$self->{'callback'}{$event->command}}( $event ) : 0 ;
     }
 }
 # http://www.w3.org/Addressing/draft-mirashi-url-irc-01.txt
@@ -96,7 +97,61 @@ sub socket   { return   $_[0]->{'socket'}   = $_[1] || $_[0]->{'socket'}   || un
 sub callback { return   $_[0]->{'callback'} = $_[1]   if ref $_[1] eq 'CODE'                   ;
                return &{$_[0]->{'callback'}}( $_[1] ) if ref $_[1] eq 'Net::IRC2::Events'      ;
                                                                                                }
-sub add_handler { }
+
+
+
+sub dispatch {
+    
+}
+
+sub add_handler { 
+    my ( $self, $commands, $callback ) = @_ ;
+    print 'Mapping callback : ' .
+	( map { $self->{'callback'}{$_} = $callback } @$commands ).
+	"\n";
+    print CORE::join ( ' , ', keys ( %{$self->{'callback'}} ) ) . "\n";
+}
 *add_global_handler = \&Net::IRC2::add_handler;
 
 1;
+
+
+__END__
+
+=head1 NAME
+
+Net::IRC2::Connection - One to an IRC server.
+
+!!! UNDER PROGRAMMING !!! Wait a moment, please hold the line ...
+
+Documentation in progress ...
+
+=head1 SEE ALSO
+
+Perl modules working with IRC connections: Net::IRC, POE::Component::IRC
+
+IRC Request For Comment 1459 L<http://www.ietf.org/rfc/rfc1459.txt?number=1459>
+
+=head1 COPYRIGHT & LICENSE
+
+Copyright 2005, Karl Y. Pradene <knotty@cpan.org> All rights reserved.
+
+This program is released under the following license: GNU General Public License, version 2
+
+This program is free software; you can redistribute it and/or modify it under the terms
+of the GNU General Public License version 2 as published by the Free Software Foundation.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with this program;
+if not, write to the 
+
+ Free Software Foundation,
+ Inc., 51 Franklin St, Fifth Floor,
+ Boston, MA  02110-1301 USA
+
+See L<http://www.fsf.org/licensing/licenses/gpl.html>
+
+=cut

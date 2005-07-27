@@ -18,13 +18,15 @@ my $conn = $bot->newconn(uri=>'irc://B1-66ER!void@irc.geeknode.org:6667/') || di
 $conn->mode($conn->nick,'+B');
 my $sock = $conn->socket;
 
-$bot->callback(\&process_event);
+#$bot->callback(\&process_event);
+$bot->add_handler(['002','003'], \&process_event);
+
 $bot->start;
 
 sub process_event { 
     my $self = shift;
+    $self->dump;
     if ( $self->command eq '376' ) { # END_OF_MOTD
-	print "HOOK\n";
 #	$conn->join('#Perl');
     }
 }
