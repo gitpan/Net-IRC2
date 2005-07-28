@@ -19,18 +19,17 @@ $conn->mode($conn->nick,'+B');
 my $sock = $conn->socket;
 
 #$bot->callback(\&process_event);
-$bot->add_handler(['002','003'], \&process_event);
-
+$bot->add_handler(['002','003'], \&dump_event);
+$bot->add_handler(['376'],\&end_of_motd);
 $bot->start;
 
-sub process_event { 
-    my $self = shift;
-    $self->dump;
-    if ( $self->command eq '376' ) { # END_OF_MOTD
-#	$conn->join('#Perl');
-    }
+sub dump_event { 
+    $_[0]->dump;
 }
-
+sub end_of_motd {
+#    $conn->join('#Bot');
+}
+sub Net::IRC2::Connection::cb001{ $_[0]->dump }
 exit 0;
 
 

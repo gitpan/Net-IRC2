@@ -13,7 +13,7 @@ our @EXPORT_OK = qw( new      ) ;
 our @Export    = qw( new      ) ;
 
 use vars qw( $VERSION $DEBUG )  ;
-$VERSION =                             '0.01' ;
+$VERSION =                             '0.02' ;
 $DEBUG   =                   10 ;
 
 
@@ -143,7 +143,7 @@ IRC Request For Comment 1459 L<http://www.ietf.org/rfc/rfc1459.txt?number=1459>
 
 Copyright 2005, Karl Y. Pradene <knotty@cpan.org> All rights reserved.
 
-This program is released under the following license: GPL v2
+This program is released under the following license: GNU General Public License, version 2
 
 This program is free software; you can redistribute it and/or modify it under the terms
 of the GNU General Public License version 2 as published by the Free Software Foundation.

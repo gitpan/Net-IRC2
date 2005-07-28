@@ -7,7 +7,7 @@ package Net::IRC2::Connection   ;
 
 use strict;      use warnings   ;
 use Exporter                    ;
-use IO::Socket::INET            ;
+use IO::Socket::INET ()         ;
 use Parse::RecDescent           ;
 use Net::IRC2::Event            ;
 
@@ -16,7 +16,7 @@ our @EXPORT_OK = qw( new      ) ;
 our @Export    = qw( new      ) ;
 
 use vars qw( $VERSION )         ;
-$VERSION =                          '0.01' ;
+$VERSION =                          '0.02' ;
 
 my $DEBUG = 5 ;
 $::RD_HINT  =   $DEBUG         ? 1 : undef    ;
@@ -54,6 +54,8 @@ sub start {
 	}
 	( defined $self->{'callback'}{$event->command} ) ?
 	    &{$self->{'callback'}{$event->command}}( $event ) : 0 ;
+	no strict 'refs';
+	&{'cb'.$event->command}($event) if defined &{'cb'.$event->command} ;
     }
 }
 # http://www.w3.org/Addressing/draft-mirashi-url-irc-01.txt
@@ -120,11 +122,45 @@ __END__
 
 =head1 NAME
 
-Net::IRC2::Connection - One to an IRC server.
+Net::IRC2::Connection - One connection to an IRC server.
 
 !!! UNDER PROGRAMMING !!! Wait a moment, please hold the line ...
 
 Documentation in progress ...
+
+=over
+
+=item add_handler
+
+=item callback
+
+=item dispatch
+
+=item join
+
+=item mode
+
+=item new
+
+=item nick
+
+=item pass
+
+=item port
+
+=item realname
+
+=item server
+
+=item socket
+
+=item split_uri
+
+=item start
+
+=item user
+
+=back
 
 =head1 SEE ALSO
 
