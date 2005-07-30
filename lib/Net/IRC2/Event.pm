@@ -12,7 +12,7 @@ our @EXPORT_OK = qw( new      ) ;
 our @Export    = qw( new      ) ;
 
 use vars qw( $VERSION )         ;
-$VERSION =                          '0.01' ;
+$VERSION =                          '0.05' ;
 
 sub new        { shift and return bless { @_, 'timestamp'=>time }              }
 
@@ -27,6 +27,7 @@ sub dump       {
           ' User     : ' . ( $self->user       || 'UNDEF' ) ."\n"              . 
           ' Host     : ' . ( $self->host       || 'UNDEF' ) ."\n"              .
           ' Command  : ' .   $self->command.                 "\n"              .
+          ' Com_str  : ' .   $self->com_str.                 "\n"              .
           ' Middle   : ' .   $self->middle.                  "\n"              . 
           ' Trailing : ' .   $self->trailing.              "\n\n"              ;
                                                                                }
@@ -42,7 +43,15 @@ sub nick       { return $_[0]->{   'nick'   } = $_[1] || $_[0]->{   'nick'   } }
 sub user       { return $_[0]->{   'user'   } = $_[1] || $_[0]->{   'user'   } }
 sub host       { return $_[0]->{   'host'   } = $_[1] || $_[0]->{   'host'   } }
 
-sub command    { return $_[0]->{ 'command'  } = $_[1] || $_[0]->{ 'command'  } }
+sub command    { return $_[0]->{ 'command'  } unless $_[1] ;
+		 $_[0]->{'command'} = $_[1] ;
+		 if ( $_[1] =~ /^\d/ ) {
+		     $_[0]->{'com_str'} = convert( $_[1] ) ;
+		 }else{
+		     $_[0]->{'com_str'} = $_[1] ;
+		 }
+		 return $_[0]->{'command'};
+	       }
 
 sub middle     {
     $_[0]->{ 'middle'  } = $_[1] || $_[0]->{'middle'}   || 'NOMIDDLE'          ;
@@ -52,16 +61,183 @@ sub trailing   {
     $_[0]->{'trailing' } = $_[1] || $_[0]->{'trailing'} || 'NOTRAILING'        ;
     return ( wantarray ) ? $_[0]->{'trailing'} : "@{$_[0]->{'trailing'}}"      ;
                                                                                }
+sub com_str    { return $_[0]->{ 'com_str'  } = $_[1] || $_[0]->{ 'com_str'  } }
+
 sub userhost   { warn 'TODO: userhost for '. ref $_[0]                         }
 
+sub convert {
+
+    my %hash = (
+401 => 'NOSUCHNICK',
+402 => 'NOSUCHSERVER',
+403 => 'NOSUCHCHANNEL',
+404 => 'CANNOTSENDTOCHAN',
+405 => 'TOOMANYCHANNELS',
+406 => 'WASNOSUCHNICK',
+407 => 'TOOMANYTARGETS',
+409 => 'NOORIGIN',
+411 => 'NORECIPIENT',
+412 => 'NOTEXTTOSEND',
+413 => 'NOTOPLEVEL',
+414 => 'WILDTOPLEVEL',
+421 => 'UNKNOWNCOMMAND',
+422 => 'NOMOTD',
+423 => 'NOADMININFO',
+424 => 'FILEERROR',
+431 => 'NONICKNAMEGIVEN',
+432 => 'ERRONEUSNICKNAME',
+433 => 'NICKNAMEINUSE',
+436 => 'NICKCOLLISION',
+441 => 'USERNOTINCHANNEL',
+442 => 'NOTONCHANNEL',
+443 => 'USERONCHANNEL',
+444 => 'NOLOGIN',
+445 => 'SUMMONDISABLED',
+446 => 'USERSDISABLED',
+451 => 'NOTREGISTERED',
+461 => 'NEEDMOREPARAMS',
+462 => 'ALREADYREGISTRED',
+463 => 'NOPERMFORHOST',
+464 => 'PASSWDMISMATCH',
+465 => 'YOUREBANNEDCREEP',
+467 => 'KEYSET',
+471 => 'CHANNELISFULL',
+472 => 'UNKNOWNMODE',
+473 => 'INVITEONLYCHAN',
+474 => 'BANNEDFROMCHAN',
+475 => 'BADCHANNELKEY',
+481 => 'NOPRIVILEGES',
+482 => 'CHANOPRIVSNEEDED',
+483 => 'CANTKILLSERVER',
+491 => 'NOOPERHOST',
+501 => 'UMODEUNKNOWNFLAG',
+502 => 'USERSDONTMATCH',
+300 => 'NONE',
+302 => 'USERHOST',
+303 => 'ISON',
+301 => 'AWAY',
+305 => 'UNAWAY',
+306 => 'NOWAWAY',
+311 => 'WHOISUSER',
+312 => 'WHOISSERVER',
+313 => 'WHOISOPERATOR',
+317 => 'WHOISIDLE',
+318 => 'ENDOFWHOIS',
+319 => 'WHOISCHANNELS',
+314 => 'WHOWASUSER',
+369 => 'ENDOFWHOWAS',
+321 => 'LISTSTART',
+322 => 'LIST',
+323 => 'LISTEND',
+324 => 'CHANNELMODEIS',
+331 => 'NOTOPIC',
+332 => 'TOPIC',
+341 => 'INVITING',
+342 => 'SUMMONING',
+351 => 'VERSION',
+352 => 'WHOREPLY',
+315 => 'ENDOFWHO',
+353 => 'NAMREPLY',
+366 => 'ENDOFNAMES',
+364 => 'LINKS',
+365 => 'ENDOFLINKS',
+367 => 'BANLIST',
+368 => 'ENDOFBANLIST',
+371 => 'INFO',
+374 => 'ENDOFINFO',
+375 => 'MOTDSTART',
+372 => 'MOTD',
+376 => 'ENDOFMOTD',
+381 => 'YOUREOPER',
+382 => 'REHASHING',
+391 => 'TIME',
+392 => 'USERSSTART',
+393 => 'USERS',
+394 => 'ENDOFUSERS',
+395 => 'NOUSERS',
+200 => 'TRACELINK',
+201 => 'TRACECONNECTING',
+202 => 'TRACEHANDSHAKE',
+203 => 'TRACEUNKNOWN',
+204 => 'TRACEOPERATOR',
+205 => 'TRACEUSER',
+206 => 'TRACESERVER',
+208 => 'TRACENEWTYPE',
+261 => 'TRACELOG',
+211 => 'STATSLINKINFO',
+212 => 'STATSCOMMANDS',
+213 => 'STATSCLINE',
+214 => 'STATSNLINE',
+215 => 'STATSILINE',
+216 => 'STATSKLINE',
+218 => 'STATSYLINE',
+219 => 'ENDOFSTATS',
+241 => 'STATSLLINE',
+242 => 'STATSUPTIME',
+243 => 'STATSOLINE',
+244 => 'STATSHLINE',
+221 => 'UMODEIS',
+251 => 'LUSERCLIENT',
+252 => 'LUSEROP',
+253 => 'LUSERUNKNOWN',
+254 => 'LUSERCHANNELS',
+255 => 'LUSERME',
+256 => 'ADMINME',
+257 => 'ADMINLOC1',
+258 => 'ADMINLOC2',
+259 => 'ADMINEMAIL',
+209 => 'TRACECLASS',
+217 => 'STATSQLINE',
+231 => 'SERVICEINFO',
+232 => 'ENDOFSERVICES',
+233 => 'SERVICE',
+234 => 'SERVLIST',
+235 => 'SERVLISTEND',
+316 => 'WHOISCHANOP',
+361 => 'KILLDONE',
+362 => 'CLOSING',
+363 => 'CLOSEEND',
+373 => 'INFOSTART',
+384 => 'MYPORTIS',
+466 => 'YOUWILLBEBANNED',
+476 => 'BADCHANMASK',
+492 => 'NOSERVICEHOST',
+);
+
+    return $hash{$_[0]} || '0E0' ;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 1;
+
+
+
+
+
 
 
 __END__
 
 =head1 NAME
 
-Net::IRC2::Event - All messages are split and return as Event.
+Net::IRC2::Event - A parsed IRC message.
 
 !!! UNDER PROGRAMMING !!! Wait a moment, please hold the line ...
 
@@ -69,15 +245,17 @@ Documentation in progress ...
 
 =over
 
-=item command
+=item new
 
 =item dump
+
+=item command(),
+
+Return he command field in IRC message
 
 =item host
 
 =item middle
-
-=item new
 
 =item nick
 
@@ -94,6 +272,10 @@ Documentation in progress ...
 =item user
 
 =item userhost
+
+=item com_str
+
+=item convert
 
 =back
 

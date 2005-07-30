@@ -16,7 +16,7 @@ our @EXPORT_OK = qw( new      ) ;
 our @Export    = qw( new      ) ;
 
 use vars qw( $VERSION )         ;
-$VERSION =                          '0.02' ;
+$VERSION =                          '0.05' ;
 
 my $DEBUG = 5 ;
 $::RD_HINT  =   $DEBUG         ? 1 : undef    ;
@@ -30,7 +30,8 @@ sub new {
 
     my $sock = $self->socket( IO::Socket::INET->new( PeerAddr => $self->server ,
 						     PeerPort => $self->port   ,
-						     Proto    => 'tcp'         ) ) ;
+						     Proto    => 'tcp'         )
+			      or warn "Can't bind : $@\n" ) ;
     $sock->send( 'PASS ' . $self->pass . "\n"                    .
                  'NICK ' . $self->nick . "\n"                    .
                  'USER ' . $self->nick . ' foo.bar.quux '        .
@@ -43,19 +44,18 @@ sub start {
     my $sock = $self->socket;
     my $parser = new Parse::RecDescent( $grammar ) ;
     while ( <$sock> ) {
-	$event = $parser->message( $_ ) or die 'Parse error';
+	$event = $parser->message( $_ ) ;
+	warn "Parse error\n$_" and next unless $event;
 	if ( $event->command eq 'PING' ) {
 	    $sock->send( 'PONG ' . $sock->sockhost . ' ' . $event->middle. "\n" );
 	}
-	next if $event->command eq '372' and $DEBUG ;
-	$event->dump if $DEBUG > 5 ;
 	if ( $event->command eq '001' ) {
 	    $parser->Replace( "servername: '" . $event->servername . "'" ) ;
 	}
 	( defined $self->{'callback'}{$event->command} ) ?
-	    &{$self->{'callback'}{$event->command}}( $event ) : 0 ;
+	    &{$self->{'callback'}{$event->command}}( $self, $event ) : 0 ;
 	no strict 'refs';
-	&{'cb'.$event->command}($event) if defined &{'cb'.$event->command} ;
+	&{'cb'.$event->command}($self, $event) if defined &{'cb'.$event->command} ;
     }
 }
 # http://www.w3.org/Addressing/draft-mirashi-url-irc-01.txt
@@ -82,6 +82,10 @@ sub mode {
 sub join {
     my $sock = $_[0]->socket                                                     ;
     shift and $sock->send( 'JOIN ' . "@_\n" )                                    ;
+                                                                                 }
+sub privmsg {
+    my $sock = $_[0]->socket                                                     ;
+    shift and $sock->send( 'PRIVMSG ' . "@_\n" )                                 ;
                                                                                  }
 
 
@@ -111,7 +115,7 @@ sub add_handler {
     print 'Mapping callback : ' .
 	( map { $self->{'callback'}{$_} = $callback } @$commands ).
 	"\n";
-    print CORE::join ( ' , ', keys ( %{$self->{'callback'}} ) ) . "\n";
+#    print CORE::join ( ' , ', keys ( %{$self->{'callback'}} ) ) . "\n";
 }
 *add_global_handler = \&Net::IRC2::add_handler;
 
@@ -130,17 +134,13 @@ Documentation in progress ...
 
 =over
 
+=item new
+
 =item add_handler
 
 =item callback
 
-=item dispatch
-
-=item join
-
-=item mode
-
-=item new
+=item start
 
 =item nick
 
@@ -156,9 +156,15 @@ Documentation in progress ...
 
 =item split_uri
 
-=item start
-
 =item user
+
+=item join
+
+=item mode
+
+=item privmsg
+
+=item dispatch
 
 =back
 

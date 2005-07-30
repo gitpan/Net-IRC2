@@ -13,7 +13,7 @@ our @EXPORT_OK = qw( new      ) ;
 our @Export    = qw( new      ) ;
 
 use vars qw( $VERSION $DEBUG )  ;
-$VERSION =                             '0.02' ;
+$VERSION =                             '0.05' ;
 $DEBUG   =                   10 ;
 
 
@@ -27,7 +27,10 @@ sub newconn     {
 sub start       {
     use threads;
     my $self = shift;
+    # FIXME
     my @threads = map { threads->create( { $_->start( $self->irc_grammar ) } ) } @{$self->connections};
+    # FIXME
+    print "Threads Started\n";
     map {$_->join} @threads;
 }
 
@@ -225,6 +228,6 @@ host: /[\w\-\.]+/
 nick: /[\w\-\\\[\]\`\{\}\^]+/
 mask: ('#' | '$') chstring
 chstring: /^[^\s ,\x00 \x0A \x0D \x07]+/ 
-user: /[\w\-]+/
+user: /^~?[\w\-]+/
 special: /^[\\\-\[\]\`\^\{\}]/
 nonwhite: /^[^\x20 \x00 \x0D \x0A]/
