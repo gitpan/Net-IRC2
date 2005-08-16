@@ -15,12 +15,11 @@ our @ISA       = qw( Exporter ) ;
 our @EXPORT_OK = qw( new      ) ;
 our @Export    = qw( new      ) ;
 
-use vars qw( $VERSION )         ;
-$VERSION =                          '0.05' ;
-
-my $DEBUG = 5 ;
-$::RD_HINT  =   $DEBUG         ? 1 : undef    ;
-$::RD_TRACE = ( $DEBUG >= 10 ) ? 1 : undef    ;
+use vars qw( $VERSION $DEBUG)   ;
+$VERSION =                          '0.07' ;
+$DEBUG   =                               0 ;
+$::RD_HINT  =   $DEBUG         ? 1 : undef ;
+$::RD_TRACE = ( $DEBUG >= 10 ) ? 1 : undef ;
 
 
 sub new {
@@ -31,33 +30,44 @@ sub new {
     my $sock = $self->socket( IO::Socket::INET->new( PeerAddr => $self->server ,
 						     PeerPort => $self->port   ,
 						     Proto    => 'tcp'         )
-			      or warn "Can't bind : $@\n" ) ;
+			    ) or ( warn "Can't bind : $@\n" and return undef ) ;
     $sock->send( 'PASS ' . $self->pass . "\n"                    .
                  'NICK ' . $self->nick . "\n"                    .
                  'USER ' . $self->nick . ' foo.bar.quux '        .
 		 $self->server . ' :' . $self->realname . "\n" ) ;
+    $self->parser(  new Parse::RecDescent( $self->grammar ) ) ;
+
     return $self                                                 ;
 }
 
 sub start {
-    my ( $self, $grammar, $event ) = ( @_, undef ) ;
-    my $sock = $self->socket;
-    my $parser = new Parse::RecDescent( $grammar ) ;
-    while ( <$sock> ) {
-	$event = $parser->message( $_ ) ;
-	warn "Parse error\n$_" and next unless $event;
-	if ( $event->command eq 'PING' ) {
-	    $sock->send( 'PONG ' . $sock->sockhost . ' ' . $event->middle. "\n" );
-	}
-	if ( $event->command eq '001' ) {
-	    $parser->Replace( "servername: '" . $event->servername . "'" ) ;
-	}
-	( defined $self->{'callback'}{$event->command} ) ?
-	    &{$self->{'callback'}{$event->command}}( $self, $event ) : 0 ;
-	no strict 'refs';
-	&{'cb'.$event->command}($self, $event) if defined &{'cb'.$event->command} ;
-    }
+#    my ( $self, $grammar, $event ) = ( @_, undef ) ;
+#    my $sock = $self->socket;
+#    1 while $self->do_one_loop ;
+    1 while $_[0]->do_one_loop ;
 }
+sub do_one_loop {
+    my $self = shift;
+    my ( $sock, $parser ) = ( $self->socket, $self->parser );
+    my $line = <$sock>;
+    my $event = $parser->message( $line ) || warn "Parse error\n$line" ;
+    if ( $event->command eq 'PING' ) {
+	$sock->send( 'PONG ' . $sock->sockhost . ' ' . $event->middle. "\n" );
+    }
+    if ( $event->command eq '001' ) {
+	$parser->Replace( "servername: '" . $event->servername . "'" ) ;
+    }
+    if (      defined $self->{ 'callback' }{ $event->command } ) {
+	           &{ $self->{ 'callback' }{ $event->command } } ( $self, $event ) ;
+    } elsif ( defined $self->{ 'callback' }{      'ALL'      } ) {
+	           &{ $self->{ 'callback' }{      'ALL'      } } ( $self, $event ) ;
+    }
+    no strict 'refs';
+    &{'cb'.$event->command}($self, $event) if defined &{'cb'.$event->command} ;
+    return $event;
+}
+
+
 # http://www.w3.org/Addressing/draft-mirashi-url-irc-01.txt
 # http://www.mozilla.org/projects/rt-messaging/chatzilla/irc-urls.html
 # irc:[<connect-to>[(/<target>[<modifiers>][<query-string>]|<modifiers>)]]
@@ -75,31 +85,33 @@ sub split_uri {
  ##############
 # Commands IRC #
  ##############
-sub mode {
+sub mode    {
     my $sock = $_[0]->socket                                                     ;
-    shift and $sock->send( 'MODE ' . "@_\n" )                                    ;
-                                                                                 }
-sub join {
+    shift and $sock->send( 'MODE ' . "@_\n" )                                    }
+sub join    {
     my $sock = $_[0]->socket                                                     ;
-    shift and $sock->send( 'JOIN ' . "@_\n" )                                    ;
-                                                                                 }
+    shift and $sock->send( 'JOIN ' . "@_\n" )                                    }
 sub privmsg {
     my $sock = $_[0]->socket                                                     ;
-    shift and $sock->send( 'PRIVMSG ' . "@_\n" )                                 ;
-                                                                                 }
+    shift and $sock->send( 'PRIVMSG ' . "@_\n" )                                 }
+sub sl      {
+    my $sock = $_[0]->socket                                                     ;
+    shift and $sock->send( "@_\n" )                                              }
 
 
 
 ############
 # Accessor #
 ############
-sub nick     { return   $_[0]->{'nick'}     = $_[1] || $_[0]->{'nick'}     || die 'no nick'    }
-sub pass     { return   $_[0]->{'pass'}     = $_[1] || $_[0]->{'pass'}     || '2 young 2 die'  }
-sub port     { return   $_[0]->{'port'}     = $_[1] || $_[0]->{'port'}     || 6667             }
+sub nick     { return   $_[0]->{'Nick'}     = $_[1] || $_[0]->{'Nick'}     || die 'no nick'    }
+sub pass     { return   $_[0]->{'Password'} = $_[1] || $_[0]->{'Password'} || '2 young 2 die'  }
+sub port     { return   $_[0]->{'Port'}     = $_[1] || $_[0]->{'Port'}     || 6667             }
 sub user     { return   $_[0]->{'user'}     = $_[1] || $_[0]->{'user'}     || 'void'           }
-sub realname { return   $_[0]->{'realname'} = $_[1] || $_[0]->{'realname'} || 'use Net::IRC-2' }
-sub server   { return   $_[0]->{'server'}   = $_[1] || $_[0]->{'server'}   || 'localhost'      }
+sub realname { return   $_[0]->{'realname'} = $_[1] || $_[0]->{'realname'} || 'use Net::IRC2'  }
+sub server   { return   $_[0]->{'Server'}   = $_[1] || $_[0]->{'Server'}   || 'localhost'      }
 sub socket   { return   $_[0]->{'socket'}   = $_[1] || $_[0]->{'socket'}   || undef            }
+sub parser   { return   $_[0]->{'parser'}   = $_[1] || $_[0]->{'parser'}                       }
+sub grammar  { return   $_[0]->{'grammar'}  = $_[1] || $_[0]->{'grammar'}                      }
 sub callback { return   $_[0]->{'callback'} = $_[1]   if ref $_[1] eq 'CODE'                   ;
                return &{$_[0]->{'callback'}}( $_[1] ) if ref $_[1] eq 'Net::IRC2::Events'      ;
                                                                                                }
@@ -110,8 +122,12 @@ sub dispatch {
     
 }
 
+sub add_default_handler { 
+    $_[0]->add_handler( [ 'ALL' ], $_[1] )  }
+
 sub add_handler { 
     my ( $self, $commands, $callback ) = @_ ;
+    $commands = [ $commands ] unless ref $commands eq 'ARRAY';
     print 'Mapping callback : ' .
 	( map { $self->{'callback'}{$_} = $callback } @$commands ).
 	"\n";
@@ -138,9 +154,19 @@ Documentation in progress ...
 
 =item add_handler
 
+=item add_default_handler
+
 =item callback
 
 =item start
+
+=item do_one_loop
+
+=item grammar
+
+=item parser
+
+=item sl
 
 =item nick
 

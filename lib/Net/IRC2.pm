@@ -13,8 +13,8 @@ our @EXPORT_OK = qw( new      ) ;
 our @Export    = qw( new      ) ;
 
 use vars qw( $VERSION $DEBUG )  ;
-$VERSION =                             '0.05' ;
-$DEBUG   =                   10 ;
+$VERSION =                          '0.07' ;
+$DEBUG   =                               0 ;
 
 
 sub new         { shift and return bless {@_} } ;
@@ -22,16 +22,24 @@ sub new         { shift and return bless {@_} } ;
 sub newconn     {
     use Net::IRC2::Connection;
     my $self = shift;
-    return $self->connections( Net::IRC2::Connection->new( @_ ) );
+    return $self->connections( Net::IRC2::Connection->new( @_, 'grammar'=>$self->irc_grammar ) );
 }
+
+sub add_default_handler { 
+    $_[0]->add_handler( [ 'ALL' ], $_[1] )  }
+
+sub add_handler {
+    my $self = shift ;
+    map { $_->add_handler( @_ ) } @{ $self->connections } ; }
+
 sub start       {
     use threads;
     my $self = shift;
     # FIXME
-    my @threads = map { threads->create( { $_->start( $self->irc_grammar ) } ) } @{$self->connections};
+    my @threads = map { threads->create( sub { $_->start() } ) } @{$self->connections};
     # FIXME
-    print "Threads Started\n";
-    map {$_->join} @threads;
+    print "Threads Started\n" ;
+    map { $_->join } @threads ;
 }
 
 sub connections {
@@ -53,9 +61,6 @@ sub callback    {
     }
     return $_[0]->{'callback'}( $param ) if defined $param     ;
                                                                }
-sub add_handler {
-    my $self = shift ;
-    map { $_->add_handler( @_ ) } @{ $self->connections } ; }
 
 sub irc_grammar { local $/ ; return <DATA> ; }
 
@@ -67,13 +72,15 @@ sub irc_grammar { local $/ ; return <DATA> ; }
 
 Net::IRC2 - Client interface to the Internet Relay Chat protocol.
 
-!!! UNDER PROGRAMMING !!! Wait a moment, please hold the line ...
+ !!! UNDER PROGRAMMING !!!
+ Feedback are welcome ( in english or french )
+ For stable release, wait a moment, please hold the line ...
 
 =cut
 
 #=head1 VERSION
 
-#This is the documentation for the Version 0.00_04 of Net::IRC2 , released July 26, 2005.
+#This is the documentation for the Version __.__.__ of Net::IRC2 , released _______________.
 
 =pod
 
@@ -82,9 +89,9 @@ Net::IRC2 - Client interface to the Internet Relay Chat protocol.
  use Net::IRC2                                                        ;
  my $bot  = new Net::IRC2                                             ;
  my $conn = $bot->newconn( uri => 'irc://Nick!User@localhost:6667/' ) ; 
- $conn->mode(    $conn->nick, '+B' )                                  ;
- $conn->mode(    '#Ailleurs +m'    )                                  ;
- $bot->callback( \&process_event   )                                  ;
+ $conn->mode( $conn->nick, '+B' )                                     ;
+ $conn->mode(  '#Ailleurs +m'   )                                     ;
+ $bot->add_default_handler( \&process_event )                         ;
  $bot->start                                                          ;
  ...
 
@@ -92,7 +99,7 @@ Net::IRC2 - Client interface to the Internet Relay Chat protocol.
 
 This module will provide you an access to the IRC protocol suitable to write your own IRC-Bots, or your
 IRC Client. The API will provide you the sames functions than Net::IRC, so change should be trivial.
-This module C<use L<Parse::RecDescent>;> , of Dr. Conway Damian 
+This module C<use L<Parse::RecDescent>;> , of Dr. Conway Damian. 
 
 =head1 FUNCTIONS
 
@@ -102,25 +109,35 @@ This module C<use L<Parse::RecDescent>;> , of Dr. Conway Damian
 
 The constructor, takes no argument. Return a Net::IRC2 object. It's your IRC-Bot.
 
-=cut
-
-
-=pod
-
 =item newconn
 
 Make a new connection. Like Net::IRC + can process a home-made tasty pseudo-URI :
 irc://Nick!User@localhost:6667/ . Yummy.
 
-=item callback
-
 =item start
 
-=item add_handler
+Start the bot
+
+=item callback ( \&function ) ;
+
+The simple way to handle all events with only one function.
+ 
+=item add_handler ( [ 'command_1', 'command_2', ... ], \&function ) ;
+
+set handler for all messages matching a command in commands list.
+ $bot->add_handler( [ '001'..'005' ], \&function ) ;
+
+=item add_default_handler ( \&function ) ;
+
+set handler for ALL messages
 
 =item connections
 
+return un ARRAY of Net::IRC2::Connection objects
+
 =item irc_grammar
+
+! Internal !
 
 =back
 
@@ -175,7 +192,6 @@ See L<http://www.fsf.org/licensing/licenses/gpl.html>
 
 
 
-
 #------------------------
 # IRC grammar
 # Read by sub irc_grammar
@@ -194,8 +210,8 @@ message:
        prefix(?) command middle(s?) (':')(?) trailing(?)
        {
 	   $Event->prefix(   $item{ 'prefix(?)' }[0] ) ;
-	   $Event->middle(   $item{'middle(s?)' }    ) ;
 	   $Event->command(  $item{  'command'  }    ) ;
+	   $Event->middle(   $item{'middle(s?)' }    ) ;
 	   $Event->trailing( $item{'trailing(?)'}    ) ;
 	   $return = $Event;
         }
@@ -207,15 +223,19 @@ from: servername
         }
       | nick ('!' user)(?) ('@' host)(?) 
 	{ 
-	    $Event->nick( $item[1]    || 'UNDEF' );
-	    $Event->user( $item[2][0] || 'UNDEF' );
-	    $Event->host( $item[3][0] || 'UNDEF' );
+	    $Event->nick( $item[1]    );
+	    $Event->user( $item[2][0] );
+	    $Event->host( $item[3][0] );
 	    $return =     $item[1]                                 .
 		      ( ( $item[2][0] ) ? '!' . $item[2][0] : '' ) .
 		      ( ( $item[3][0] ) ? '@' . $item[3][0] : '' ) ;
 	 }
 servername: /[\w\.\-]+/
-command: /\d{3}/ | /[a-z]+/i
+command: /\d{3}/ 
+         | /[a-z]+/i
+           {
+               $Event->com_str( $item[1] );
+	   }
 middle: /[^\:\s\x00\x20\x0A\x0D]+/
 trailing: /[^\x00\x0A\x0D]+/
 target: to(s /,/) 
@@ -228,6 +248,6 @@ host: /[\w\-\.]+/
 nick: /[\w\-\\\[\]\`\{\}\^]+/
 mask: ('#' | '$') chstring
 chstring: /^[^\s ,\x00 \x0A \x0D \x07]+/ 
-user: /^~?[\w\-]+/
+user: /^~?[\.\w\-]+/
 special: /^[\\\-\[\]\`\^\{\}]/
 nonwhite: /^[^\x20 \x00 \x0D \x0A]/
