@@ -16,10 +16,10 @@ our @EXPORT_OK = qw( new      ) ;
 our @Export    = qw( new      ) ;
 
 use vars qw( $VERSION $DEBUG)   ;
-$VERSION =                          '0.07' ;
-$DEBUG   =                               0 ;
-$::RD_HINT  =   $DEBUG         ? 1 : undef ;
-$::RD_TRACE = ( $DEBUG >= 10 ) ? 1 : undef ;
+$VERSION    =                    '0.11' ;
+$DEBUG      =                         0 ;
+$::RD_HINT  = 1 if $DEBUG       ;
+$::RD_TRACE = 1 if $DEBUG >= 10 ;
 
 
 sub new {
@@ -33,37 +33,32 @@ sub new {
 			    ) or ( warn "Can't bind : $@\n" and return undef ) ;
     $sock->send( 'PASS ' . $self->pass . "\n"                    .
                  'NICK ' . $self->nick . "\n"                    .
-                 'USER ' . $self->nick . ' foo.bar.quux '        .
+                 'USER ' . $self->user . ' foo.bar.quux '        .
 		 $self->server . ' :' . $self->realname . "\n" ) ;
-    $self->parser(  new Parse::RecDescent( $self->grammar ) ) ;
-
+    $self->parser(  new Parse::RecDescent( $self->grammar ) )    ;
     return $self                                                 ;
 }
 
-sub start {
-#    my ( $self, $grammar, $event ) = ( @_, undef ) ;
-#    my $sock = $self->socket;
-#    1 while $self->do_one_loop ;
-    1 while $_[0]->do_one_loop ;
-}
+sub start { 
+    my $self = shift           ;
+    1 while $self->do_one_loop }
+
 sub do_one_loop {
     my $self = shift;
     my ( $sock, $parser ) = ( $self->socket, $self->parser );
     my $line = <$sock>;
-    my $event = $parser->message( $line ) || warn "Parse error\n$line" ;
+    my $event = $parser->message( $line ) or warn "Parse error\n$line" and return 0 ;
     if ( $event->command eq 'PING' ) {
-	$sock->send( 'PONG ' . $sock->sockhost . ' ' . $event->middle. "\n" );
+	$sock->send( 'PONG ' . $event->trailing. "\n" )                             ;
     }
-    if ( $event->command eq '001' ) {
-	$parser->Replace( "servername: '" . $event->servername . "'" ) ;
-    }
+    $self->chans( scalar $event->trailing ) if $event->command eq 'JOIN'            ;
     if (      defined $self->{ 'callback' }{ $event->command } ) {
-	           &{ $self->{ 'callback' }{ $event->command } } ( $self, $event ) ;
-    } elsif ( defined $self->{ 'callback' }{      'ALL'      } ) {
-	           &{ $self->{ 'callback' }{      'ALL'      } } ( $self, $event ) ;
+	           &{ $self->{ 'callback' }{ $event->command } } ( $self, $event )  ;
+    } elsif ( defined $self->{ 'callback' }{   'WaterGate'   } ) {
+	           &{ $self->{ 'callback' }{   'WaterGate'   } } ( $self, $event )  ;
     }
-    no strict 'refs';
-    &{'cb'.$event->command}($self, $event) if defined &{'cb'.$event->command} ;
+    no strict 'refs'                                                                ;
+    &{'cb'.$event->command}($self, $event) if defined &{'cb'.$event->command}       ;
     return $event;
 }
 
@@ -85,55 +80,44 @@ sub split_uri {
  ##############
 # Commands IRC #
  ##############
-sub mode    {
-    my $sock = $_[0]->socket                                                     ;
-    shift and $sock->send( 'MODE ' . "@_\n" )                                    }
-sub join    {
-    my $sock = $_[0]->socket                                                     ;
-    shift and $sock->send( 'JOIN ' . "@_\n" )                                    }
-sub privmsg {
-    my $sock = $_[0]->socket                                                     ;
-    shift and $sock->send( 'PRIVMSG ' . "@_\n" )                                 }
-sub sl      {
-    my $sock = $_[0]->socket                                                     ;
-    shift and $sock->send( "@_\n" )                                              }
+sub mode    { shift->sl(  'MODE '   . "@_"   ) }
+sub join    { shift->sl(  'JOIN '   . "@_"   ) }
+sub privmsg { shift->sl( 'PRIVMSG ' . "@_"   ) }
+sub notice  { shift->sl( 'NOTICE '  . "@_"   ) }
+
+sub sl      { shift->socket->send(    "@_\n" ) }
 
 
 
 ############
 # Accessor #
 ############
-sub nick     { return   $_[0]->{'Nick'}     = $_[1] || $_[0]->{'Nick'}     || die 'no nick'    }
+sub nick     { return   $_[0]->{  'Nick'  } = $_[1] || $_[0]->{  'Nick'  } || die 'no nick'    }
 sub pass     { return   $_[0]->{'Password'} = $_[1] || $_[0]->{'Password'} || '2 young 2 die'  }
-sub port     { return   $_[0]->{'Port'}     = $_[1] || $_[0]->{'Port'}     || 6667             }
-sub user     { return   $_[0]->{'user'}     = $_[1] || $_[0]->{'user'}     || 'void'           }
+sub port     { return   $_[0]->{  'Port'  } = $_[1] || $_[0]->{  'Port'  } || 6667             }
+sub user     { return   $_[0]->{  'user'  } = $_[1] || $_[0]->{  'user'  } || 'void'           }
 sub realname { return   $_[0]->{'realname'} = $_[1] || $_[0]->{'realname'} || 'use Net::IRC2'  }
-sub server   { return   $_[0]->{'Server'}   = $_[1] || $_[0]->{'Server'}   || 'localhost'      }
-sub socket   { return   $_[0]->{'socket'}   = $_[1] || $_[0]->{'socket'}   || undef            }
-sub parser   { return   $_[0]->{'parser'}   = $_[1] || $_[0]->{'parser'}                       }
-sub grammar  { return   $_[0]->{'grammar'}  = $_[1] || $_[0]->{'grammar'}                      }
+sub server   { return   $_[0]->{ 'Server' } = $_[1] || $_[0]->{ 'Server' } || 'localhost'      }
+sub socket   { return   $_[0]->{ 'socket' } = $_[1] || $_[0]->{ 'socket' } || undef            }
+sub parser   { return   $_[0]->{ 'parser' } = $_[1] || $_[0]->{ 'parser' }                     }
+sub grammar  { return   $_[0]->{'grammar' } = $_[1] || $_[0]->{'grammar' }                     }
 sub callback { return   $_[0]->{'callback'} = $_[1]   if ref $_[1] eq 'CODE'                   ;
-               return &{$_[0]->{'callback'}}( $_[1] ) if ref $_[1] eq 'Net::IRC2::Events'      ;
-                                                                                               }
+               return &{$_[0]->{'callback'}}( $_[1] ) if ref $_[1] eq 'Net::IRC2::Events'      }
 
+sub chans    { return push ( @{shift->{'chans'}}, shift ) }
 
+sub last_sl  { return   $_[0]->{'last_sl' } = $_[1] || $_[0]->{'last_sl' }                     }
 
-sub dispatch {
-    
-}
-
-sub add_default_handler { 
-    $_[0]->add_handler( [ 'ALL' ], $_[1] )  }
+sub add_default_handler { $_[0]->add_handler( [ 'WaterGate' ], $_[1] ) }
 
 sub add_handler { 
-    my ( $self, $commands, $callback ) = @_ ;
-    $commands = [ $commands ] unless ref $commands eq 'ARRAY';
-    print 'Mapping callback : ' .
-	( map { $self->{'callback'}{$_} = $callback } @$commands ).
-	"\n";
-#    print CORE::join ( ' , ', keys ( %{$self->{'callback'}} ) ) . "\n";
-}
+    my ( $self, $commands, $callback ) = @_                        ;
+    $commands = [ $commands ] unless ref $commands eq 'ARRAY'      ;
+    ( map { $self->{'callback'}{$_} = $callback } @$commands )     }
+
 *add_global_handler = \&Net::IRC2::add_handler;
+
+# sub dispatch { }
 
 1;
 
@@ -144,53 +128,69 @@ __END__
 
 Net::IRC2::Connection - One connection to an IRC server.
 
+=head1 VERSION
+
 !!! UNDER PROGRAMMING !!! Wait a moment, please hold the line ...
 
 Documentation in progress ...
 
+=head1 FUNCTIONS
+
 =over
 
-=item new
+=item new()
 
-=item add_handler
+=item add_handler()
 
-=item add_default_handler
+=item add_default_handler()
 
-=item callback
+=item callback()
 
-=item start
+=item start()
 
-=item do_one_loop
+=item do_one_loop()
 
-=item grammar
+=item nick()
 
-=item parser
+=item user()
 
-=item sl
+=item pass()
 
-=item nick
+=item realname()
 
-=item pass
+=item server()
 
-=item port
+=item port()
 
-=item realname
+=item socket()
 
-=item server
+=item mode()
 
-=item socket
+=item join()
 
-=item split_uri
+=item privmsg()
 
-=item user
+=item notice()
 
-=item join
+=item sl()
 
-=item mode
+=item last_sl()
 
-=item privmsg
+=item chans()
 
-=item dispatch
+=back
+
+=head1 INTERNALS FUNCTIONS
+
+=over
+
+=item split_uri()
+
+=item grammar()
+
+=item parser()
+
+=item dispatch()
 
 =back
 

@@ -1,5 +1,10 @@
 Revision history for Net-IRC2
 
+0.08	08/16/2005
+	add SIGNATURE file with Module::Signature
+	add Connection::notice 
+	add Event::from
+
 0.07	08/15/2005
 	add Net::IRC2::add_default_handler
 	fix Net::IRC2::Event::dump
@@ -12,7 +17,6 @@ Revision history for Net-IRC2
 
 0.05    07/30/2005
         
-
 0.02    07/28/2005
         It Work !!!! please try and enjoy. I'am working on doc.
         See DumBot file

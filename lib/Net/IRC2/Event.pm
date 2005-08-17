@@ -12,9 +12,9 @@ our @EXPORT_OK = qw( new      ) ;
 our @Export    = qw( new      ) ;
 
 use vars qw( $VERSION )         ;
-$VERSION =                          '0.07' ;
+$VERSION =                       '0.11' ;
 
-sub new        { shift and return bless { @_, 'timestamp'=>time }              }
+sub new        { shift and return bless { @_, 'timestamp'=>time }                    }
 
 sub dump       {
     my $self = shift                                                                 ;
@@ -37,8 +37,9 @@ sub dump       {
  ##########
 sub time       { return $_[0]->{'timestamp' }                                  }
 sub orig       { return $_[0]->{   'orig'   }                                  }
-sub prefix     { return $_[0]->{  'prefix'  } = $_[1] || $_[0]->{  'prefix'  } }
+sub prefix     { return $_[0]->{  'prefix'  } = $_[1] or $_[0]->{  'prefix'  } }
 
+sub from       { return $_[0]->{   'from'   } = $_[1] || $_[0]->{   'from'   } }
 sub servername { return $_[0]->{'servername'} = $_[1] || $_[0]->{'servername'} }
 sub nick       { return $_[0]->{   'nick'   } = $_[1] || $_[0]->{   'nick'   } }
 sub user       { return $_[0]->{   'user'   } = $_[1] || $_[0]->{   'user'   } }
@@ -47,17 +48,16 @@ sub host       { return $_[0]->{   'host'   } = $_[1] || $_[0]->{   'host'   } }
 sub command    { return $_[0]->{ 'command'  } = $_[1] || $_[0]->{ 'command'  } }
 
 sub middle     {
-    $_[0]->{ 'middle'  } = $_[1] || $_[0]->{'middle'}                          ;
-    return ( wantarray ) ? $_[0]->{'middle'}   : "@{$_[0]->{'middle'}}"        ;
-                                                                               }
+    $_[0]->{ 'middle'  } = $_[1] || $_[0]->{ 'middle' }                        ;
+    return ( wantarray ) ? $_[0]->{ 'middle' }   : "@{$_[0]->{'middle'}}"      }
 sub trailing   {
     $_[0]->{'trailing' } = $_[1] || $_[0]->{'trailing'}                        ;
-    return ( wantarray ) ? $_[0]->{'trailing'} : "@{$_[0]->{'trailing'}}"      ;
-                                                                               }
+    return ( wantarray ) ? $_[0]->{'trailing'} : "@{$_[0]->{'trailing'}}"      }
 
 
 sub com_str    { return $_[0]->{ 'com_str'  } = $_[1] || $_[0]->{ 'com_str'  } }
 sub userhost   { warn 'TODO: userhost for '. ref $_[0]                         }
+
 *to = \&middle;
 
 
@@ -169,63 +169,73 @@ __END__
 
 Net::IRC2::Event - A parsed IRC message.
 
+=head1 VERSION
+
 !!! UNDER PROGRAMMING !!! Wait a moment, please hold the line ...
 
 Documentation in progress ...
 
+=head1 FUNCTIONS
+
 =over
 
-=item new
+=item new()
 
-=item dump
+=item dump()
 
 Print a nice formated dump of the Event
 
-=item time
+=item time()
 
 A timestamp
 
-=item orig
+=item orig()
 
 The original IRC message
 
-=item prefix
+=item prefix()
 
 Return the prefix field in IRC message
 
-=item command(),
+=item command()
 
 Return the command field in IRC message
 
-=item middle
+=item middle()
 
 Return the midlle field in IRC message
 
-=item trailing
+=item trailing()
 
 Return the Trailing field in IRC message
 
-=item com_str
+=item com_str()
 
 Should return the command in ALPHA if exist
 
-=item nick
+=item from()
 
-=item host
+=item servername()
 
-=item servername
+=item nick()
 
-=item to
+=item user()
+
+=item host()
+
+=item userhost()
+
+=item to()
 
 the Event's destination
 
-=item user
+=back
 
-=item userhost
+=head1 INTERNALS FUNCTIONS
 
-=item convert
+=over
 
-! INTERNAL !
+=item convert()
 
 =back
 

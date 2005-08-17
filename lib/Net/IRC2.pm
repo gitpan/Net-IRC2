@@ -13,8 +13,8 @@ our @EXPORT_OK = qw( new      ) ;
 our @Export    = qw( new      ) ;
 
 use vars qw( $VERSION $DEBUG )  ;
-$VERSION =                          '0.07' ;
-$DEBUG   =                               0 ;
+$VERSION =                       '0.11' ;
+$DEBUG   =                            0 ;
 
 
 sub new         { shift and return bless {@_} } ;
@@ -25,36 +25,25 @@ sub newconn     {
     return $self->connections( Net::IRC2::Connection->new( @_, 'grammar'=>$self->irc_grammar ) );
 }
 
-sub add_default_handler { 
-    $_[0]->add_handler( [ 'ALL' ], $_[1] )  }
+sub add_default_handler { $_[0]->add_handler( [ 'WaterGate' ], $_[1] )          }
 
-sub add_handler {
-    my $self = shift ;
-    map { $_->add_handler( @_ ) } @{ $self->connections } ; }
+sub add_handler         { map { $_->add_handler( @_ ) } @{ shift->connections } }
 
 sub start       {
     use threads;
-    my $self = shift;
     # FIXME
-    my @threads = map { threads->create( sub { $_->start() } ) } @{$self->connections};
-    # FIXME
-    print "Threads Started\n" ;
+    my @threads = map { threads->create( sub { $_->start() } ) } @{$_[0]->connections};
     map { $_->join } @threads ;
 }
 
 sub connections {
-    my $self  = shift                          ;
-    my $param = shift                          ;
-    if ( defined $param ) {
-	push @{$self->{'connections'}}, $param ;
-	return $param                          ;
-    }else{
-	return $self->{'connections'}          ;
-    }
-                                               }
+    my ( $self, $param ) = @_                           ;
+    return $self->{'connections'} unless defined $param ;
+    push @{$self->{'connections'}}, $param              ;
+    return $param                                       ;
+                                                        }
 sub callback    {
-    my $self  = shift                                          ;
-    my $param = shift                                          ;
+    my ( $self, $param ) = @_                                  ;
     if ( ref $param eq 'CODE' ) {
 	map { $_->callback( $param ) } @{ $self->connections } ;
 	return 0                                               ;
@@ -72,13 +61,13 @@ sub irc_grammar { local $/ ; return <DATA> ; }
 
 Net::IRC2 - Client interface to the Internet Relay Chat protocol.
 
+=head1 VERSION
+
  !!! UNDER PROGRAMMING !!!
  Feedback are welcome ( in english or french )
- For stable release, wait a moment, please hold the line ...
+ For stable release, wait a moment, please hold the line ... or help me :)
 
 =cut
-
-#=head1 VERSION
 
 #This is the documentation for the Version __.__.__ of Net::IRC2 , released _______________.
 
@@ -105,40 +94,42 @@ This module C<use L<Parse::RecDescent>;> , of Dr. Conway Damian.
 
 =over
 
-=item new
+=item new()
 
 The constructor, takes no argument. Return a Net::IRC2 object. It's your IRC-Bot.
 
-=item newconn
+=item newconn()
 
 Make a new connection. Like Net::IRC + can process a home-made tasty pseudo-URI :
 irc://Nick!User@localhost:6667/ . Yummy.
 
-=item start
+=item start()
 
 Start the bot
 
-=item callback ( \&function ) ;
-
-The simple way to handle all events with only one function.
- 
-=item add_handler ( [ 'command_1', 'command_2', ... ], \&function ) ;
+=item add_handler()
 
 set handler for all messages matching a command in commands list.
  $bot->add_handler( [ '001'..'005' ], \&function ) ;
 
-=item add_default_handler ( \&function ) ;
+=item add_default_handler()
 
+The simple way to handle all events with only one function.
 set handler for ALL messages
+ $bot->add_default_handler( \&function ) ;
 
-=item connections
+=item connections()
 
 return un ARRAY of Net::IRC2::Connection objects
 
-=item irc_grammar
+=item irc_grammar()
 
 ! Internal !
 
+=item callback()
+
+! DEPRECATED !
+ 
 =back
 
 =head1 AUTHOR
@@ -216,11 +207,12 @@ message:
 	   $return = $Event;
         }
 prefix: ':' <commit> from
+        { 
+	    $return = $Event->from( ':' . $item{'from'} ) }
+
 from: servername
-        {
-            $Event->servername($item[1]);
-            $return = $item[1]
-        }
+        { 
+	    $return = $Event->servername( $item[1] ) }
       | nick ('!' user)(?) ('@' host)(?) 
 	{ 
 	    $Event->nick( $item[1]    );
@@ -229,8 +221,12 @@ from: servername
 	    $return =     $item[1]                                 .
 		      ( ( $item[2][0] ) ? '!' . $item[2][0] : '' ) .
 		      ( ( $item[3][0] ) ? '@' . $item[3][0] : '' ) ;
-	 }
-servername: /[\w\.\-]+/
+	}
+servername: /[\w\.\-]+ /
+       {
+	   chop $item[1] ;
+	   $return = $item[1] ;
+       }
 command: /\d{3}/ 
          | /[a-z]+/i
            {
@@ -245,7 +241,7 @@ to: channel
   | mask
 channel: ( '#' | '&' ) chstring
 host: /[\w\-\.]+/
-nick: /[\w\-\\\[\]\`\{\}\^]+/
+nick: /[\w\-\\\[\]\`\{\}\^\|]+/
 mask: ('#' | '$') chstring
 chstring: /^[^\s ,\x00 \x0A \x0D \x07]+/ 
 user: /^~?[\.\w\-]+/

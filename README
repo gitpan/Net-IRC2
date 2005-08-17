@@ -21,7 +21,7 @@ Alternatively, to install with Module::Build, you can use the following commands
     ./Build install
 
 
-COPYRIGHT AND LICENCE
+COPYRIGHT AND LICENSE
 
 Copyright (C) 2005 Karl Y. Pradene
 

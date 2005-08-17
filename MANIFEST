@@ -11,3 +11,4 @@ README
 t/00-load.t
 t/pod-coverage.t
 t/pod.t
+SIGNATURE    Added here by Module::Build
