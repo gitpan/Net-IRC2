@@ -12,7 +12,7 @@ our @EXPORT_OK = qw( new      ) ;
 our @Export    = qw( new      ) ;
 
 use vars qw( $VERSION )         ;
-$VERSION =                       '0.11' ;
+$VERSION =                       '0.13' ;
 
 sub new        { shift and return bless { @_, 'timestamp'=>time }                    }
 
@@ -58,8 +58,10 @@ sub trailing   {
 sub com_str    { return $_[0]->{ 'com_str'  } = $_[1] || $_[0]->{ 'com_str'  } }
 sub userhost   { warn 'TODO: userhost for '. ref $_[0]                         }
 
+# FIXME !!!
 *to = \&middle;
 
+*parent = \&Net::IRC2::Connection::parent;
 
 sub convert {
     my %hash = (
@@ -137,31 +139,7 @@ sub convert {
     return $hash{$_[0]} ;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 1;
-
-
-
-
-
-
 
 __END__
 
@@ -180,6 +158,10 @@ Documentation in progress ...
 =over
 
 =item new()
+
+=item parent()
+
+return the Net::IRC2::Connection parent object
 
 =item dump()
 

@@ -16,7 +16,7 @@ our @EXPORT_OK = qw( new      ) ;
 our @Export    = qw( new      ) ;
 
 use vars qw( $VERSION $DEBUG)   ;
-$VERSION    =                    '0.11' ;
+$VERSION    =                    '0.13' ;
 $DEBUG      =                         0 ;
 $::RD_HINT  = 1 if $DEBUG       ;
 $::RD_TRACE = 1 if $DEBUG >= 10 ;
@@ -51,6 +51,7 @@ sub do_one_loop {
     if ( $event->command eq 'PING' ) {
 	$sock->send( 'PONG ' . $event->trailing. "\n" )                             ;
     }
+    $event->{'_parent'} = $self                                                     ;
     $self->chans( scalar $event->trailing ) if $event->command eq 'JOIN'            ;
     if (      defined $self->{ 'callback' }{ $event->command } ) {
 	           &{ $self->{ 'callback' }{ $event->command } } ( $self, $event )  ;
@@ -104,7 +105,8 @@ sub grammar  { return   $_[0]->{'grammar' } = $_[1] || $_[0]->{'grammar' }      
 sub callback { return   $_[0]->{'callback'} = $_[1]   if ref $_[1] eq 'CODE'                   ;
                return &{$_[0]->{'callback'}}( $_[1] ) if ref $_[1] eq 'Net::IRC2::Events'      }
 
-sub chans    { return push ( @{shift->{'chans'}}, shift ) }
+sub parent   { return   $_[0]->{'_parent' }                                                    }
+sub chans    { return push ( @{shift->{'chans'}}, shift )                                      }
 
 sub last_sl  { return   $_[0]->{'last_sl' } = $_[1] || $_[0]->{'last_sl' }                     }
 
@@ -118,6 +120,7 @@ sub add_handler {
 *add_global_handler = \&Net::IRC2::add_handler;
 
 # sub dispatch { }
+
 
 1;
 
@@ -163,6 +166,10 @@ Documentation in progress ...
 =item port()
 
 =item socket()
+
+=item parent()
+
+return the Net::IRC2 parent object
 
 =item mode()
 

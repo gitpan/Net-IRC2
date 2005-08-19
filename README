@@ -1,19 +1,7 @@
-Net-IRC2 - Client interface to the Internet Relay Chat protocol.
-================================================================
-
-!!! UNDER PROGRAMMING !!! Wait a moment, please hold the line ...
+ Net-IRC2 - Client interface to the Internet Relay Chat protocol
+=================================================================
 
 INSTALLATION
-
-To install this module, run the following commands:
-
-    perl Makefile.PL
-    make
-    make test
-    make install
-
-
-Alternatively, to install with Module::Build, you can use the following commands:
 
     perl Build.PL
     ./Build

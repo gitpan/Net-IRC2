@@ -13,7 +13,7 @@ our @EXPORT_OK = qw( new      ) ;
 our @Export    = qw( new      ) ;
 
 use vars qw( $VERSION $DEBUG )  ;
-$VERSION =                       '0.11' ;
+$VERSION =                       '0.13' ;
 $DEBUG   =                            0 ;
 
 
@@ -22,7 +22,8 @@ sub new         { shift and return bless {@_} } ;
 sub newconn     {
     use Net::IRC2::Connection;
     my $self = shift;
-    return $self->connections( Net::IRC2::Connection->new( @_, 'grammar'=>$self->irc_grammar ) );
+    return $self->connections( Net::IRC2::Connection->new( @_, 'grammar' => $self->irc_grammar,
+							   _parent => $self ) );
 }
 
 sub add_default_handler { $_[0]->add_handler( [ 'WaterGate' ], $_[1] )          }
@@ -88,7 +89,7 @@ Net::IRC2 - Client interface to the Internet Relay Chat protocol.
 
 This module will provide you an access to the IRC protocol suitable to write your own IRC-Bots, or your
 IRC Client. The API will provide you the sames functions than Net::IRC, so change should be trivial.
-This module C<use L<Parse::RecDescent>;> , of Dr. Conway Damian. 
+This module C<use L<Parse::RecDescent>;> by Dr. Conway Damian.
 
 =head1 FUNCTIONS
 
@@ -193,7 +194,6 @@ __DATA__
 {
     use Net::IRC2::Event;
     my $Event = undef;
-    my $DEBUG = 10;
 }
 
 message: 

@@ -1,6 +1,10 @@
 Revision history for Net-IRC2
 
-0.08	08/16/2005
+0.13    08/18/2005
+	add Event::parent()
+	add Connection::parent()
+
+0.11	08/17/2005
 	add SIGNATURE file with Module::Signature
 	add Connection::notice 
 	add Event::from
