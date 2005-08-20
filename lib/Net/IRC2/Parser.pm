@@ -12,7 +12,7 @@ $skip = '\s*';
     use Net::IRC2::Event    ;
     my $Event = undef       ;
     use vars qw( $VERSION ) ;
-    $VERSION =              '0.19' ;
+    $VERSION =              '0.23' ;
 
 ;
 

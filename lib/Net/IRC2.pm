@@ -13,7 +13,7 @@ our @EXPORT_OK = qw( new      ) ;
 our @Export    = qw( new      ) ;
 
 use vars qw( $VERSION $DEBUG)   ;
-$VERSION =                       '0.19' ;
+$VERSION =                       '0.23' ;
 $DEBUG   =                            0 ;
 
 

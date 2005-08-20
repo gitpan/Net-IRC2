@@ -15,8 +15,8 @@ our @EXPORT_OK = qw( new      ) ;
 our @Export    = qw( new      ) ;
 
 use vars qw( $VERSION $DEBUG )  ;
-my $VERSION    =                 '0.19' ;
-my $DEBUG      =                      0 ;
+$VERSION    =                    '0.23' ;
+$DEBUG      =                         0 ;
 
 
 sub new {

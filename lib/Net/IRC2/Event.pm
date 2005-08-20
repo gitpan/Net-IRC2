@@ -12,7 +12,7 @@ our @EXPORT_OK = qw( new      ) ;
 our @Export    = qw( new      ) ;
 
 use vars qw( $VERSION )         ;
-$VERSION =                       '0.19' ;
+$VERSION =                       '0.23' ;
 
 sub new        { shift and return bless { @_, 'timestamp'=>time }                    }
 
