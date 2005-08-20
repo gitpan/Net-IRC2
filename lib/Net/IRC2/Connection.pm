@@ -8,23 +8,19 @@ package Net::IRC2::Connection   ;
 use strict;      use warnings   ;
 use Exporter                    ;
 use IO::Socket::INET ()         ;
-use Parse::RecDescent           ;
-use Net::IRC2::Event            ;
+use Net::IRC2::Parser           ;
 
 our @ISA       = qw( Exporter ) ;
 our @EXPORT_OK = qw( new      ) ;
 our @Export    = qw( new      ) ;
 
-use vars qw( $VERSION $DEBUG)   ;
-$VERSION    =                    '0.13' ;
-$DEBUG      =                         0 ;
-$::RD_HINT  = 1 if $DEBUG       ;
-$::RD_TRACE = 1 if $DEBUG >= 10 ;
+my $VERSION    =                 '0.17' ;
+my $DEBUG      =                      0 ;
 
 
 sub new {
-    my $class = shift                         ;
-    my $self = bless {@_}                     ;
+    my $class = shift                                                          ;
+    my $self = bless { @_ }                                                    ;
     $self->split_uri if exists $self->{'uri'} ;
 
     my $sock = $self->socket( IO::Socket::INET->new( PeerAddr => $self->server ,
@@ -35,7 +31,7 @@ sub new {
                  'NICK ' . $self->nick . "\n"                    .
                  'USER ' . $self->user . ' foo.bar.quux '        .
 		 $self->server . ' :' . $self->realname . "\n" ) ;
-    $self->parser(  new Parse::RecDescent( $self->grammar ) )    ;
+    $self->parser( new Net::IRC2::Parser )                       ;
     return $self                                                 ;
 }
 
@@ -63,31 +59,30 @@ sub do_one_loop {
     return $event;
 }
 
-
-# http://www.w3.org/Addressing/draft-mirashi-url-irc-01.txt
-# http://www.mozilla.org/projects/rt-messaging/chatzilla/irc-urls.html
-# irc:[<connect-to>[(/<target>[<modifiers>][<query-string>]|<modifiers>)]]
-# http://www.gbiv.com/protocols/uri/rfc/rfc3986.html
-# irc://nick!user@server:port/
 sub split_uri {
+    # http://www.w3.org/Addressing/draft-mirashi-url-irc-01.txt
+    # http://www.mozilla.org/projects/rt-messaging/chatzilla/irc-urls.html
+    # irc:[<connect-to>[(/<target>[<modifiers>][<query-string>]|<modifiers>)]]
+    # http://www.gbiv.com/protocols/uri/rfc/rfc3986.html
+    # irc://nick!user@server:port/
     my $self = shift                                                             ;
     if ( exists $self->{'uri'} ) {
 	$self->{'uri'} =~ m|^irc://(.+?)!(.+?)@(.+?):(\d+)/|                     ;
-	$self->nick($1); $self->user($2); $self->server($3); $self->port($4)     ;
-	return 0                                                                 ;
-    }
+	$self->nick($1); $self->user($2); $self->server($3); $self->port($4)     }
                                                                                  }
+sub sl        {
+    shift->socket->send(    "@_\n" )                                             }
+
 
  ##############
 # Commands IRC #
  ##############
-sub mode    { shift->sl(  'MODE '   . "@_"   ) }
-sub join    { shift->sl(  'JOIN '   . "@_"   ) }
-sub privmsg { shift->sl( 'PRIVMSG ' . "@_"   ) }
-sub notice  { shift->sl( 'NOTICE '  . "@_"   ) }
-
-sub sl      { shift->socket->send(    "@_\n" ) }
-
+sub mode    { shift->sl(  'MODE'   . " @_"   ) }
+sub join    { shift->sl(  'JOIN'   . " @_"   ) }
+sub privmsg { shift->sl( 'PRIVMSG' . " @_"   ) }
+sub notice  { shift->sl( 'NOTICE'  . " @_"   ) }
+sub part    { shift->sl(  'PART'   . " @_"   ) }
+sub whois   { shift->sl(  'WHOIS'  . " @_"   ) }
 
 
 ############
@@ -121,7 +116,6 @@ sub add_handler {
 
 # sub dispatch { }
 
-
 1;
 
 
@@ -143,47 +137,73 @@ Documentation in progress ...
 
 =item new()
 
+Make a Connection object. You don't need to make a NET::IRC2 object if
+you just want one connection. You should specify nick, server.
+
+Net::IRC2::Connection::new( nick=>'MyNick', server=>'host.domain.tld' )
+
 =item add_handler()
+
+Add a callback
+
+$conn->add_handler( 'PRIVMSG', \&callback )
+$conn->add_handler( [ 'PRIVMSG' , 'JOIN' ], \&callback )
 
 =item add_default_handler()
 
-=item callback()
-
 =item start()
+
+Start the client loop
 
 =item do_one_loop()
 
+Process only the next IRC message
+
 =item nick()
+
+Your Nickname
 
 =item user()
 
 =item pass()
 
+The password
+
 =item realname()
-
-=item server()
-
-=item port()
-
-=item socket()
 
 =item parent()
 
 return the Net::IRC2 parent object
 
+=item server()
+
+The server like it was specified on creation
+
+=item port()
+
+=item socket()
+
+Return the socket assigned to the connection
+
+=item chans()
+
+=back 
+
+=head2 IRC Commands
+
+=over
+
 =item mode()
 
 =item join()
+
+=item part
 
 =item privmsg()
 
 =item notice()
 
-=item sl()
-
-=item last_sl()
-
-=item chans()
+=item whois
 
 =back
 
@@ -198,6 +218,12 @@ return the Net::IRC2 parent object
 =item parser()
 
 =item dispatch()
+
+=item callback()
+
+=item sl()
+
+=item last_sl()
 
 =back
 
@@ -230,3 +256,6 @@ if not, write to the
 See L<http://www.fsf.org/licensing/licenses/gpl.html>
 
 =cut
+
+__END__
+

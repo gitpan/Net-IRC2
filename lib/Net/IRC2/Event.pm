@@ -11,8 +11,8 @@ our @ISA       = qw( Exporter ) ;
 our @EXPORT_OK = qw( new      ) ;
 our @Export    = qw( new      ) ;
 
-use vars qw( $VERSION )         ;
-$VERSION =                       '0.13' ;
+# use vars qw( $VERSION )         ;
+# $VERSION =                       '0.17' ;
 
 sub new        { shift and return bless { @_, 'timestamp'=>time }                    }
 
@@ -147,17 +147,9 @@ __END__
 
 Net::IRC2::Event - A parsed IRC message.
 
-=head1 VERSION
-
-!!! UNDER PROGRAMMING !!! Wait a moment, please hold the line ...
-
-Documentation in progress ...
-
 =head1 FUNCTIONS
 
 =over
-
-=item new()
 
 =item parent()
 
@@ -201,13 +193,21 @@ Should return the command in ALPHA if exist
 
 =item nick()
 
+Nickname of sender
+
 =item user()
 
+Username of sender
+
 =item host()
+
+Host of sender
 
 =item userhost()
 
 =item to()
+
+The message destination, could be a chan, you nick ...
 
 the Event's destination
 
@@ -216,6 +216,8 @@ the Event's destination
 =head1 INTERNALS FUNCTIONS
 
 =over
+
+=item new()
 
 =item convert()
 

@@ -1,5 +1,5 @@
 #
-#.Copyright 2005, Karl Y. Pradene <knotty@cpan.org> All rights reserved.
+# Copyright 2005, Karl Y. Pradene <knotty@cpan.org> All rights reserved.
 #
 
 package Net::IRC2;
@@ -13,7 +13,7 @@ our @EXPORT_OK = qw( new      ) ;
 our @Export    = qw( new      ) ;
 
 use vars qw( $VERSION $DEBUG )  ;
-$VERSION =                       '0.13' ;
+$VERSION =                       '0.17' ;
 $DEBUG   =                            0 ;
 
 
@@ -22,7 +22,7 @@ sub new         { shift and return bless {@_} } ;
 sub newconn     {
     use Net::IRC2::Connection;
     my $self = shift;
-    return $self->connections( Net::IRC2::Connection->new( @_, 'grammar' => $self->irc_grammar,
+    return $self->connections( Net::IRC2::Connection->new( @_,
 							   _parent => $self ) );
 }
 
@@ -52,8 +52,6 @@ sub callback    {
     return $_[0]->{'callback'}( $param ) if defined $param     ;
                                                                }
 
-sub irc_grammar { local $/ ; return <DATA> ; }
-
 1; # End of Net::IRC2
 
 
@@ -65,8 +63,7 @@ Net::IRC2 - Client interface to the Internet Relay Chat protocol.
 =head1 VERSION
 
  !!! UNDER PROGRAMMING !!!
- Feedback are welcome ( in english or french )
- For stable release, wait a moment, please hold the line ... or help me :)
+ You can use and feedback is welcome ( in english or french )
 
 =cut
 
@@ -174,76 +171,3 @@ if not, write to the
 See L<http://www.fsf.org/licensing/licenses/gpl.html>
 
 =cut
-
-
-
-
-
-
-
-
-
-
-#------------------------
-# IRC grammar
-# Read by sub irc_grammar
-#
-
-__DATA__
-
-{
-    use Net::IRC2::Event;
-    my $Event = undef;
-}
-
-message: 
-       { $Event = new Net::IRC2::Event( 'orig' => $text ) }
-       prefix(?) command middle(s?) (':')(?) trailing(?)
-       {
-	   $Event->prefix(   $item{ 'prefix(?)' }[0] ) ;
-	   $Event->command(  $item{  'command'  }    ) ;
-	   $Event->middle(   $item{'middle(s?)' }    ) ;
-	   $Event->trailing( $item{'trailing(?)'}    ) ;
-	   $return = $Event;
-        }
-prefix: ':' <commit> from
-        { 
-	    $return = $Event->from( ':' . $item{'from'} ) }
-
-from: servername
-        { 
-	    $return = $Event->servername( $item[1] ) }
-      | nick ('!' user)(?) ('@' host)(?) 
-	{ 
-	    $Event->nick( $item[1]    );
-	    $Event->user( $item[2][0] );
-	    $Event->host( $item[3][0] );
-	    $return =     $item[1]                                 .
-		      ( ( $item[2][0] ) ? '!' . $item[2][0] : '' ) .
-		      ( ( $item[3][0] ) ? '@' . $item[3][0] : '' ) ;
-	}
-servername: /[\w\.\-]+ /
-       {
-	   chop $item[1] ;
-	   $return = $item[1] ;
-       }
-command: /\d{3}/ 
-         | /[a-z]+/i
-           {
-               $Event->com_str( $item[1] );
-	   }
-middle: /[^\:\s\x00\x20\x0A\x0D]+/
-trailing: /[^\x00\x0A\x0D]+/
-target: to(s /,/) 
-to: channel 
-  | ( user '@' servername )
-  | nick
-  | mask
-channel: ( '#' | '&' ) chstring
-host: /[\w\-\.]+/
-nick: /[\w\-\\\[\]\`\{\}\^\|]+/
-mask: ('#' | '$') chstring
-chstring: /^[^\s ,\x00 \x0A \x0D \x07]+/ 
-user: /^~?[\.\w\-]+/
-special: /^[\\\-\[\]\`\^\{\}]/
-nonwhite: /^[^\x20 \x00 \x0D \x0A]/
