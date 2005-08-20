@@ -12,8 +12,8 @@ our @ISA       = qw( Exporter ) ;
 our @EXPORT_OK = qw( new      ) ;
 our @Export    = qw( new      ) ;
 
-use vars qw( $VERSION $DEBUG )  ;
-$VERSION =                       '0.17' ;
+use vars qw( $VERSION $DEBUG)   ;
+$VERSION =                       '0.19' ;
 $DEBUG   =                            0 ;
 
 

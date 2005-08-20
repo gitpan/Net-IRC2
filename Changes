@@ -1,6 +1,10 @@
 Revision history for Net-IRC2
 
-0.15    08/20/2005
+0.19    08/20/2005
+	Fix version number problem
+
+0.17    08/20/2005
+	Create Net::IRC2::Parser
 	add Connection::part
 	add Connection::whois
 

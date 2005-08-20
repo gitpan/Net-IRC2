@@ -1,6 +1,9 @@
 {
-    use Net::IRC2::Event;
-    my $Event = undef;
+    use Net::IRC2::Event    ;
+    my $Event = undef       ;
+    use vars qw( $VERSION ) ;
+    $VERSION =              '0.19' ;
+
 }
 
 message: 
@@ -54,3 +57,5 @@ chstring: /^[^\s ,\x00 \x0A \x0D \x07]+/
 user: /^~?[\.\w\-]+/
 special: /^[\\\-\[\]\`\^\{\}]/
 nonwhite: /^[^\x20 \x00 \x0D \x0A]/
+
+

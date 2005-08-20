@@ -14,7 +14,8 @@ our @ISA       = qw( Exporter ) ;
 our @EXPORT_OK = qw( new      ) ;
 our @Export    = qw( new      ) ;
 
-my $VERSION    =                 '0.17' ;
+use vars qw( $VERSION $DEBUG )  ;
+my $VERSION    =                 '0.19' ;
 my $DEBUG      =                      0 ;
 
 
@@ -22,7 +23,6 @@ sub new {
     my $class = shift                                                          ;
     my $self = bless { @_ }                                                    ;
     $self->split_uri if exists $self->{'uri'} ;
-
     my $sock = $self->socket( IO::Socket::INET->new( PeerAddr => $self->server ,
 						     PeerPort => $self->port   ,
 						     Proto    => 'tcp'         )
@@ -32,8 +32,7 @@ sub new {
                  'USER ' . $self->user . ' foo.bar.quux '        .
 		 $self->server . ' :' . $self->realname . "\n" ) ;
     $self->parser( new Net::IRC2::Parser )                       ;
-    return $self                                                 ;
-}
+    return $self                                                 }
 
 sub start { 
     my $self = shift           ;
@@ -140,14 +139,14 @@ Documentation in progress ...
 Make a Connection object. You don't need to make a NET::IRC2 object if
 you just want one connection. You should specify nick, server.
 
-Net::IRC2::Connection::new( nick=>'MyNick', server=>'host.domain.tld' )
+ Net::IRC2::Connection::new( nick=>'MyNick', server=>'host.domain.tld' )
 
 =item add_handler()
 
 Add a callback
 
-$conn->add_handler( 'PRIVMSG', \&callback )
-$conn->add_handler( [ 'PRIVMSG' , 'JOIN' ], \&callback )
+ $conn->add_handler( 'PRIVMSG', \&callback )
+ $conn->add_handler( [ 'PRIVMSG' , 'JOIN' ], \&callback )
 
 =item add_default_handler()
 
