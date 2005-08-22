@@ -12,7 +12,7 @@ our @EXPORT_OK = qw( new      ) ;
 our @Export    = qw( new      ) ;
 
 use vars qw( $VERSION )         ;
-$VERSION =                       '0.23' ;
+$VERSION =                       '0.27' ;
 
 sub new        { shift and return bless { @_, 'timestamp'=>time }                    }
 
@@ -30,22 +30,19 @@ sub dump       {
           ( ( $self->user       ) ? ' User     : ' . $self->user       . "\n" : '' ) . 
           ( ( $self->host       ) ? ' Host     : ' . $self->host       . "\n" : '' ) .
           ( ( $self->com_str    ) ? ' Com_str  : ' . $self->com_str    . "\n" : '' ) .
-          ( ( $self->to         ) ? ' To       : ' . $self->to         . "\n" : '' ) ; 
+#          ( ( $self->to         ) ? ' To       : ' . $self->to         . "\n" : '' ) ; 
+                                    ' To       : ' . $self->to         . "\n"        ; 
                                                                                      }
  ##########
 # Accessor #
  ##########
-sub time       { return $_[0]->{'timestamp' }                                  }
-sub orig       { return $_[0]->{   'orig'   }                                  }
-sub prefix     { return $_[0]->{  'prefix'  } = $_[1] or $_[0]->{  'prefix'  } }
+sub time { $_[0]->{'timestamp'} }
+sub orig { $_[0]->{'orig'}      }
 
-sub from       { return $_[0]->{   'from'   } = $_[1] || $_[0]->{   'from'   } }
-sub servername { return $_[0]->{'servername'} = $_[1] || $_[0]->{'servername'} }
-sub nick       { return $_[0]->{   'nick'   } = $_[1] || $_[0]->{   'nick'   } }
-sub user       { return $_[0]->{   'user'   } = $_[1] || $_[0]->{   'user'   } }
-sub host       { return $_[0]->{   'host'   } = $_[1] || $_[0]->{   'host'   } }
-
-sub command    { return $_[0]->{ 'command'  } = $_[1] || $_[0]->{ 'command'  } }
+{   my ( $code, $name ) = q{ sub { return $_[0]->{NAME} = $_[1] || $_[0]->{NAME} } }      ;
+    no strict 'refs'                                                                      ;
+    foreach $name qw( prefix from servername nick user host to command com_str userhost ) {
+	$_ = $code ; s/NAME/$name/g ; *{$name} = eval                                   } }
 
 sub middle     {
     $_[0]->{ 'middle'  } = $_[1] || $_[0]->{ 'middle' }                        ;
@@ -55,11 +52,13 @@ sub trailing   {
     return ( wantarray ) ? $_[0]->{'trailing'} : "@{$_[0]->{'trailing'}}"      }
 
 
-sub com_str    { return $_[0]->{ 'com_str'  } = $_[1] || $_[0]->{ 'com_str'  } }
-sub userhost   { warn 'TODO: userhost for '. ref $_[0]                         }
-
-# FIXME !!!
-*to = \&middle;
+sub polish_up  {
+    if ( $_[0]->command eq 'JOIN' ) {
+	$_[0]->to( $_[0]->trailing ) ;    
+    }else{
+	$_[0]->to( $_[0]->middle ) ;    
+    }
+}
 
 *parent = \&Net::IRC2::Connection::parent;
 
@@ -221,13 +220,17 @@ the Event's destination
 
 =item convert()
 
+=item polish_up()
+
 =back
 
 =head1 SEE ALSO
 
-Perl modules working with IRC connections: Net::IRC, POE::Component::IRC
+Net::IRC2, Net::IRC2::Connection
 
-IRC Request For Comment 1459 L<http://www.ietf.org/rfc/rfc1459.txt?number=1459>
+=head1 AUTHOR
+
+Karl Y. Pradene, C<< <knotty@cpan.org>, irc://knotty@freenode.org/ >> 
 
 =head1 COPYRIGHT & LICENSE
 

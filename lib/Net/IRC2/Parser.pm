@@ -13,7 +13,6 @@ $skip = '\s*';
     my $Event = undef       ;
     use vars qw( $VERSION ) ;
     $VERSION =              '0.23' ;
-
 ;
 
 
@@ -4162,7 +4161,7 @@ package Net::IRC2::Parser; sub new { my $self = bless( {
                                                                                              'description' => '/[\\\\w\\\\-\\\\\\\\\\\\[\\\\]\\\\`\\\\\\{\\\\\\}\\\\^\\\\|]+/',
                                                                                              'lookahead' => 0,
                                                                                              'rdelim' => '/',
-                                                                                             'line' => 54,
+                                                                                             'line' => 53,
                                                                                              'mod' => '',
                                                                                              'ldelim' => '/'
                                                                                            }, 'Parse::RecDescent::Token' )
@@ -4172,7 +4171,7 @@ package Net::IRC2::Parser; sub new { my $self = bless( {
                                                             ],
                                                  'name' => 'nick',
                                                  'vars' => '',
-                                                 'line' => 54
+                                                 'line' => 53
                                                }, 'Parse::RecDescent::Rule' ),
                               'channel' => bless( {
                                                     'impcount' => 1,
@@ -4198,7 +4197,7 @@ package Net::IRC2::Parser; sub new { my $self = bless( {
                                                                                                 'implicit' => '\'#\', or \'&\'',
                                                                                                 'argcode' => undef,
                                                                                                 'lookahead' => 0,
-                                                                                                'line' => 52
+                                                                                                'line' => 51
                                                                                               }, 'Parse::RecDescent::Subrule' ),
                                                                                        bless( {
                                                                                                 'subrule' => 'chstring',
@@ -4206,7 +4205,7 @@ package Net::IRC2::Parser; sub new { my $self = bless( {
                                                                                                 'implicit' => undef,
                                                                                                 'argcode' => undef,
                                                                                                 'lookahead' => 0,
-                                                                                                'line' => 52
+                                                                                                'line' => 51
                                                                                               }, 'Parse::RecDescent::Subrule' )
                                                                                      ],
                                                                           'line' => undef
@@ -4214,7 +4213,7 @@ package Net::IRC2::Parser; sub new { my $self = bless( {
                                                                ],
                                                     'name' => 'channel',
                                                     'vars' => '',
-                                                    'line' => 52
+                                                    'line' => 51
                                                   }, 'Parse::RecDescent::Rule' ),
                               '_alternation_1_of_production_2_of_rule_from' => bless( {
                                                                                         'impcount' => 0,
@@ -4238,7 +4237,7 @@ package Net::IRC2::Parser; sub new { my $self = bless( {
                                                                                                                                     'hashname' => '__STRING1__',
                                                                                                                                     'description' => '\'!\'',
                                                                                                                                     'lookahead' => 0,
-                                                                                                                                    'line' => 62
+                                                                                                                                    'line' => 61
                                                                                                                                   }, 'Parse::RecDescent::Literal' ),
                                                                                                                            bless( {
                                                                                                                                     'subrule' => 'user',
@@ -4246,7 +4245,7 @@ package Net::IRC2::Parser; sub new { my $self = bless( {
                                                                                                                                     'implicit' => undef,
                                                                                                                                     'argcode' => undef,
                                                                                                                                     'lookahead' => 0,
-                                                                                                                                    'line' => 62
+                                                                                                                                    'line' => 61
                                                                                                                                   }, 'Parse::RecDescent::Subrule' )
                                                                                                                          ],
                                                                                                               'line' => undef
@@ -4254,7 +4253,7 @@ package Net::IRC2::Parser; sub new { my $self = bless( {
                                                                                                    ],
                                                                                         'name' => '_alternation_1_of_production_2_of_rule_from',
                                                                                         'vars' => '',
-                                                                                        'line' => 62
+                                                                                        'line' => 61
                                                                                       }, 'Parse::RecDescent::Rule' ),
                               '_alternation_1_of_production_2_of_rule_to' => bless( {
                                                                                       'impcount' => 0,
@@ -4280,14 +4279,14 @@ package Net::IRC2::Parser; sub new { my $self = bless( {
                                                                                                                                   'implicit' => undef,
                                                                                                                                   'argcode' => undef,
                                                                                                                                   'lookahead' => 0,
-                                                                                                                                  'line' => 62
+                                                                                                                                  'line' => 61
                                                                                                                                 }, 'Parse::RecDescent::Subrule' ),
                                                                                                                          bless( {
                                                                                                                                   'pattern' => '@',
                                                                                                                                   'hashname' => '__STRING1__',
                                                                                                                                   'description' => '\'@\'',
                                                                                                                                   'lookahead' => 0,
-                                                                                                                                  'line' => 62
+                                                                                                                                  'line' => 61
                                                                                                                                 }, 'Parse::RecDescent::Literal' ),
                                                                                                                          bless( {
                                                                                                                                   'subrule' => 'servername',
@@ -4295,7 +4294,7 @@ package Net::IRC2::Parser; sub new { my $self = bless( {
                                                                                                                                   'implicit' => undef,
                                                                                                                                   'argcode' => undef,
                                                                                                                                   'lookahead' => 0,
-                                                                                                                                  'line' => 62
+                                                                                                                                  'line' => 61
                                                                                                                                 }, 'Parse::RecDescent::Subrule' )
                                                                                                                        ],
                                                                                                             'line' => undef
@@ -4303,7 +4302,7 @@ package Net::IRC2::Parser; sub new { my $self = bless( {
                                                                                                  ],
                                                                                       'name' => '_alternation_1_of_production_2_of_rule_to',
                                                                                       'vars' => '',
-                                                                                      'line' => 62
+                                                                                      'line' => 61
                                                                                     }, 'Parse::RecDescent::Rule' ),
                               'special' => bless( {
                                                     'impcount' => 0,
@@ -4326,7 +4325,7 @@ package Net::IRC2::Parser; sub new { my $self = bless( {
                                                                                                 'description' => '/^[\\\\\\\\\\\\-\\\\[\\\\]\\\\`\\\\^\\\\\\{\\\\\\}]/',
                                                                                                 'lookahead' => 0,
                                                                                                 'rdelim' => '/',
-                                                                                                'line' => 58,
+                                                                                                'line' => 57,
                                                                                                 'mod' => '',
                                                                                                 'ldelim' => '/'
                                                                                               }, 'Parse::RecDescent::Token' )
@@ -4336,7 +4335,7 @@ package Net::IRC2::Parser; sub new { my $self = bless( {
                                                                ],
                                                     'name' => 'special',
                                                     'vars' => '',
-                                                    'line' => 58
+                                                    'line' => 57
                                                   }, 'Parse::RecDescent::Rule' ),
                               'to' => bless( {
                                                'impcount' => 0,
@@ -4364,7 +4363,7 @@ package Net::IRC2::Parser; sub new { my $self = bless( {
                                                                                            'implicit' => undef,
                                                                                            'argcode' => undef,
                                                                                            'lookahead' => 0,
-                                                                                           'line' => 48
+                                                                                           'line' => 47
                                                                                          }, 'Parse::RecDescent::Subrule' )
                                                                                 ],
                                                                      'line' => undef
@@ -4384,10 +4383,10 @@ package Net::IRC2::Parser; sub new { my $self = bless( {
                                                                                            'implicit' => 'user',
                                                                                            'argcode' => undef,
                                                                                            'lookahead' => 0,
-                                                                                           'line' => 49
+                                                                                           'line' => 48
                                                                                          }, 'Parse::RecDescent::Subrule' )
                                                                                 ],
-                                                                     'line' => 49
+                                                                     'line' => 48
                                                                    }, 'Parse::RecDescent::Production' ),
                                                             bless( {
                                                                      'number' => '2',
@@ -4404,10 +4403,10 @@ package Net::IRC2::Parser; sub new { my $self = bless( {
                                                                                            'implicit' => undef,
                                                                                            'argcode' => undef,
                                                                                            'lookahead' => 0,
-                                                                                           'line' => 50
+                                                                                           'line' => 49
                                                                                          }, 'Parse::RecDescent::Subrule' )
                                                                                 ],
-                                                                     'line' => 50
+                                                                     'line' => 49
                                                                    }, 'Parse::RecDescent::Production' ),
                                                             bless( {
                                                                      'number' => '3',
@@ -4424,15 +4423,15 @@ package Net::IRC2::Parser; sub new { my $self = bless( {
                                                                                            'implicit' => undef,
                                                                                            'argcode' => undef,
                                                                                            'lookahead' => 0,
-                                                                                           'line' => 51
+                                                                                           'line' => 50
                                                                                          }, 'Parse::RecDescent::Subrule' )
                                                                                 ],
-                                                                     'line' => 51
+                                                                     'line' => 50
                                                                    }, 'Parse::RecDescent::Production' )
                                                           ],
                                                'name' => 'to',
                                                'vars' => '',
-                                               'line' => 48
+                                               'line' => 47
                                              }, 'Parse::RecDescent::Rule' ),
                               'target' => bless( {
                                                    'impcount' => 0,
@@ -4463,7 +4462,7 @@ package Net::IRC2::Parser; sub new { my $self = bless( {
                                                                                                                      'implicit' => undef,
                                                                                                                      'argcode' => undef,
                                                                                                                      'lookahead' => 0,
-                                                                                                                     'line' => 47
+                                                                                                                     'line' => 46
                                                                                                                    }, 'Parse::RecDescent::Subrule' ),
                                                                                                'rightarg' => bless( {
                                                                                                                       'subrule' => 'to',
@@ -4471,7 +4470,7 @@ package Net::IRC2::Parser; sub new { my $self = bless( {
                                                                                                                       'implicit' => undef,
                                                                                                                       'argcode' => undef,
                                                                                                                       'lookahead' => 0,
-                                                                                                                      'line' => 47
+                                                                                                                      'line' => 46
                                                                                                                     }, 'Parse::RecDescent::Subrule' ),
                                                                                                'hashname' => '__DIRECTIVE1__',
                                                                                                'type' => 'leftop',
@@ -4481,7 +4480,7 @@ package Net::IRC2::Parser; sub new { my $self = bless( {
                                                                                                                 'description' => '/,/',
                                                                                                                 'lookahead' => 0,
                                                                                                                 'rdelim' => '/',
-                                                                                                                'line' => 47,
+                                                                                                                'line' => 46,
                                                                                                                 'mod' => '',
                                                                                                                 'ldelim' => '/'
                                                                                                               }, 'Parse::RecDescent::Token' )
@@ -4492,7 +4491,7 @@ package Net::IRC2::Parser; sub new { my $self = bless( {
                                                               ],
                                                    'name' => 'target',
                                                    'vars' => '',
-                                                   'line' => 47
+                                                   'line' => 46
                                                  }, 'Parse::RecDescent::Rule' ),
                               'trailing' => bless( {
                                                      'impcount' => 0,
@@ -4515,7 +4514,7 @@ package Net::IRC2::Parser; sub new { my $self = bless( {
                                                                                                  'description' => '/[^\\\\x00\\\\x0A\\\\x0D]+/',
                                                                                                  'lookahead' => 0,
                                                                                                  'rdelim' => '/',
-                                                                                                 'line' => 46,
+                                                                                                 'line' => 45,
                                                                                                  'mod' => '',
                                                                                                  'ldelim' => '/'
                                                                                                }, 'Parse::RecDescent::Token' )
@@ -4525,7 +4524,7 @@ package Net::IRC2::Parser; sub new { my $self = bless( {
                                                                 ],
                                                      'name' => 'trailing',
                                                      'vars' => '',
-                                                     'line' => 46
+                                                     'line' => 45
                                                    }, 'Parse::RecDescent::Rule' ),
                               'from' => bless( {
                                                  'impcount' => 2,
@@ -4553,12 +4552,12 @@ package Net::IRC2::Parser; sub new { my $self = bless( {
                                                                                              'implicit' => undef,
                                                                                              'argcode' => undef,
                                                                                              'lookahead' => 0,
-                                                                                             'line' => 23
+                                                                                             'line' => 22
                                                                                            }, 'Parse::RecDescent::Subrule' ),
                                                                                     bless( {
                                                                                              'hashname' => '__ACTION1__',
                                                                                              'lookahead' => 0,
-                                                                                             'line' => 24,
+                                                                                             'line' => 23,
                                                                                              'code' => '{ 
 	    $return = $Event->servername( $item[1] ) }'
                                                                                            }, 'Parse::RecDescent::Action' )
@@ -4580,7 +4579,7 @@ package Net::IRC2::Parser; sub new { my $self = bless( {
                                                                                              'implicit' => undef,
                                                                                              'argcode' => undef,
                                                                                              'lookahead' => 0,
-                                                                                             'line' => 26
+                                                                                             'line' => 25
                                                                                            }, 'Parse::RecDescent::Subrule' ),
                                                                                     bless( {
                                                                                              'subrule' => '_alternation_1_of_production_2_of_rule_from',
@@ -4591,7 +4590,7 @@ package Net::IRC2::Parser; sub new { my $self = bless( {
                                                                                              'matchrule' => 0,
                                                                                              'repspec' => '?',
                                                                                              'lookahead' => 0,
-                                                                                             'line' => 26
+                                                                                             'line' => 25
                                                                                            }, 'Parse::RecDescent::Repetition' ),
                                                                                     bless( {
                                                                                              'subrule' => '_alternation_2_of_production_2_of_rule_from',
@@ -4602,12 +4601,12 @@ package Net::IRC2::Parser; sub new { my $self = bless( {
                                                                                              'matchrule' => 0,
                                                                                              'repspec' => '?',
                                                                                              'lookahead' => 0,
-                                                                                             'line' => 26
+                                                                                             'line' => 25
                                                                                            }, 'Parse::RecDescent::Repetition' ),
                                                                                     bless( {
                                                                                              'hashname' => '__ACTION1__',
                                                                                              'lookahead' => 0,
-                                                                                             'line' => 27,
+                                                                                             'line' => 26,
                                                                                              'code' => '{ 
 	    $Event->nick( $item[1]    );
 	    $Event->user( $item[2][0] );
@@ -4618,12 +4617,12 @@ package Net::IRC2::Parser; sub new { my $self = bless( {
 	}'
                                                                                            }, 'Parse::RecDescent::Action' )
                                                                                   ],
-                                                                       'line' => 26
+                                                                       'line' => 25
                                                                      }, 'Parse::RecDescent::Production' )
                                                             ],
                                                  'name' => 'from',
                                                  'vars' => '',
-                                                 'line' => 23
+                                                 'line' => 22
                                                }, 'Parse::RecDescent::Rule' ),
                               'user' => bless( {
                                                  'impcount' => 0,
@@ -4646,7 +4645,7 @@ package Net::IRC2::Parser; sub new { my $self = bless( {
                                                                                              'description' => '/^~?[\\\\.\\\\w\\\\-]+/',
                                                                                              'lookahead' => 0,
                                                                                              'rdelim' => '/',
-                                                                                             'line' => 57,
+                                                                                             'line' => 56,
                                                                                              'mod' => '',
                                                                                              'ldelim' => '/'
                                                                                            }, 'Parse::RecDescent::Token' )
@@ -4656,7 +4655,7 @@ package Net::IRC2::Parser; sub new { my $self = bless( {
                                                             ],
                                                  'name' => 'user',
                                                  'vars' => '',
-                                                 'line' => 57
+                                                 'line' => 56
                                                }, 'Parse::RecDescent::Rule' ),
                               'mask' => bless( {
                                                  'impcount' => 1,
@@ -4682,7 +4681,7 @@ package Net::IRC2::Parser; sub new { my $self = bless( {
                                                                                              'implicit' => '\'#\', or \'$\'',
                                                                                              'argcode' => undef,
                                                                                              'lookahead' => 0,
-                                                                                             'line' => 55
+                                                                                             'line' => 54
                                                                                            }, 'Parse::RecDescent::Subrule' ),
                                                                                     bless( {
                                                                                              'subrule' => 'chstring',
@@ -4690,7 +4689,7 @@ package Net::IRC2::Parser; sub new { my $self = bless( {
                                                                                              'implicit' => undef,
                                                                                              'argcode' => undef,
                                                                                              'lookahead' => 0,
-                                                                                             'line' => 55
+                                                                                             'line' => 54
                                                                                            }, 'Parse::RecDescent::Subrule' )
                                                                                   ],
                                                                        'line' => undef
@@ -4698,7 +4697,7 @@ package Net::IRC2::Parser; sub new { my $self = bless( {
                                                             ],
                                                  'name' => 'mask',
                                                  'vars' => '',
-                                                 'line' => 55
+                                                 'line' => 54
                                                }, 'Parse::RecDescent::Rule' ),
                               'command' => bless( {
                                                     'impcount' => 0,
@@ -4721,7 +4720,7 @@ package Net::IRC2::Parser; sub new { my $self = bless( {
                                                                                                 'description' => '/\\\\d\\{3\\}/',
                                                                                                 'lookahead' => 0,
                                                                                                 'rdelim' => '/',
-                                                                                                'line' => 40,
+                                                                                                'line' => 39,
                                                                                                 'mod' => '',
                                                                                                 'ldelim' => '/'
                                                                                               }, 'Parse::RecDescent::Token' )
@@ -4743,25 +4742,25 @@ package Net::IRC2::Parser; sub new { my $self = bless( {
                                                                                                 'description' => '/[a-z]+/i',
                                                                                                 'lookahead' => 0,
                                                                                                 'rdelim' => '/',
-                                                                                                'line' => 41,
+                                                                                                'line' => 40,
                                                                                                 'mod' => 'i',
                                                                                                 'ldelim' => '/'
                                                                                               }, 'Parse::RecDescent::Token' ),
                                                                                        bless( {
                                                                                                 'hashname' => '__ACTION1__',
                                                                                                 'lookahead' => 0,
-                                                                                                'line' => 42,
+                                                                                                'line' => 41,
                                                                                                 'code' => '{
                $Event->com_str( $item[1] );
 	   }'
                                                                                               }, 'Parse::RecDescent::Action' )
                                                                                      ],
-                                                                          'line' => 41
+                                                                          'line' => 40
                                                                         }, 'Parse::RecDescent::Production' )
                                                                ],
                                                     'name' => 'command',
                                                     'vars' => '',
-                                                    'line' => 40
+                                                    'line' => 39
                                                   }, 'Parse::RecDescent::Rule' ),
                               'middle' => bless( {
                                                    'impcount' => 0,
@@ -4784,7 +4783,7 @@ package Net::IRC2::Parser; sub new { my $self = bless( {
                                                                                                'description' => '/[^\\\\:\\\\s\\\\x00\\\\x20\\\\x0A\\\\x0D]+/',
                                                                                                'lookahead' => 0,
                                                                                                'rdelim' => '/',
-                                                                                               'line' => 45,
+                                                                                               'line' => 44,
                                                                                                'mod' => '',
                                                                                                'ldelim' => '/'
                                                                                              }, 'Parse::RecDescent::Token' )
@@ -4794,7 +4793,7 @@ package Net::IRC2::Parser; sub new { my $self = bless( {
                                                               ],
                                                    'name' => 'middle',
                                                    'vars' => '',
-                                                   'line' => 45
+                                                   'line' => 44
                                                  }, 'Parse::RecDescent::Rule' ),
                               '_alternation_1_of_production_1_of_rule_message' => bless( {
                                                                                            'impcount' => 0,
@@ -4816,7 +4815,7 @@ package Net::IRC2::Parser; sub new { my $self = bless( {
                                                                                                                                        'hashname' => '__STRING1__',
                                                                                                                                        'description' => '\':\'',
                                                                                                                                        'lookahead' => 0,
-                                                                                                                                       'line' => 62
+                                                                                                                                       'line' => 61
                                                                                                                                      }, 'Parse::RecDescent::Literal' )
                                                                                                                             ],
                                                                                                                  'line' => undef
@@ -4824,7 +4823,7 @@ package Net::IRC2::Parser; sub new { my $self = bless( {
                                                                                                       ],
                                                                                            'name' => '_alternation_1_of_production_1_of_rule_message',
                                                                                            'vars' => '',
-                                                                                           'line' => 62
+                                                                                           'line' => 61
                                                                                          }, 'Parse::RecDescent::Rule' ),
                               'message' => bless( {
                                                     'impcount' => 1,
@@ -4850,7 +4849,7 @@ package Net::IRC2::Parser; sub new { my $self = bless( {
                                                                                        bless( {
                                                                                                 'hashname' => '__ACTION1__',
                                                                                                 'lookahead' => 0,
-                                                                                                'line' => 10,
+                                                                                                'line' => 9,
                                                                                                 'code' => '{ $Event = new Net::IRC2::Event( \'orig\' => $text ) }'
                                                                                               }, 'Parse::RecDescent::Action' ),
                                                                                        bless( {
@@ -4862,7 +4861,7 @@ package Net::IRC2::Parser; sub new { my $self = bless( {
                                                                                                 'matchrule' => 0,
                                                                                                 'repspec' => '?',
                                                                                                 'lookahead' => 0,
-                                                                                                'line' => 11
+                                                                                                'line' => 10
                                                                                               }, 'Parse::RecDescent::Repetition' ),
                                                                                        bless( {
                                                                                                 'subrule' => 'command',
@@ -4870,7 +4869,7 @@ package Net::IRC2::Parser; sub new { my $self = bless( {
                                                                                                 'implicit' => undef,
                                                                                                 'argcode' => undef,
                                                                                                 'lookahead' => 0,
-                                                                                                'line' => 11
+                                                                                                'line' => 10
                                                                                               }, 'Parse::RecDescent::Subrule' ),
                                                                                        bless( {
                                                                                                 'subrule' => 'middle',
@@ -4881,7 +4880,7 @@ package Net::IRC2::Parser; sub new { my $self = bless( {
                                                                                                 'matchrule' => 0,
                                                                                                 'repspec' => 's?',
                                                                                                 'lookahead' => 0,
-                                                                                                'line' => 11
+                                                                                                'line' => 10
                                                                                               }, 'Parse::RecDescent::Repetition' ),
                                                                                        bless( {
                                                                                                 'subrule' => '_alternation_1_of_production_1_of_rule_message',
@@ -4892,7 +4891,7 @@ package Net::IRC2::Parser; sub new { my $self = bless( {
                                                                                                 'matchrule' => 0,
                                                                                                 'repspec' => '?',
                                                                                                 'lookahead' => 0,
-                                                                                                'line' => 11
+                                                                                                'line' => 10
                                                                                               }, 'Parse::RecDescent::Repetition' ),
                                                                                        bless( {
                                                                                                 'subrule' => 'trailing',
@@ -4903,12 +4902,12 @@ package Net::IRC2::Parser; sub new { my $self = bless( {
                                                                                                 'matchrule' => 0,
                                                                                                 'repspec' => '?',
                                                                                                 'lookahead' => 0,
-                                                                                                'line' => 11
+                                                                                                'line' => 10
                                                                                               }, 'Parse::RecDescent::Repetition' ),
                                                                                        bless( {
                                                                                                 'hashname' => '__ACTION2__',
                                                                                                 'lookahead' => 0,
-                                                                                                'line' => 12,
+                                                                                                'line' => 11,
                                                                                                 'code' => '{
 	   $Event->prefix(   $item{ \'prefix(?)\' }[0] ) ;
 	   $Event->command(  $item{  \'command\'  }    ) ;
@@ -4923,7 +4922,7 @@ package Net::IRC2::Parser; sub new { my $self = bless( {
                                                                ],
                                                     'name' => 'message',
                                                     'vars' => '',
-                                                    'line' => 9
+                                                    'line' => 8
                                                   }, 'Parse::RecDescent::Rule' ),
                               'host' => bless( {
                                                  'impcount' => 0,
@@ -4946,7 +4945,7 @@ package Net::IRC2::Parser; sub new { my $self = bless( {
                                                                                              'description' => '/[\\\\w\\\\-\\\\.]+/',
                                                                                              'lookahead' => 0,
                                                                                              'rdelim' => '/',
-                                                                                             'line' => 53,
+                                                                                             'line' => 52,
                                                                                              'mod' => '',
                                                                                              'ldelim' => '/'
                                                                                            }, 'Parse::RecDescent::Token' )
@@ -4956,7 +4955,7 @@ package Net::IRC2::Parser; sub new { my $self = bless( {
                                                             ],
                                                  'name' => 'host',
                                                  'vars' => '',
-                                                 'line' => 53
+                                                 'line' => 52
                                                }, 'Parse::RecDescent::Rule' ),
                               'chstring' => bless( {
                                                      'impcount' => 0,
@@ -4979,7 +4978,7 @@ package Net::IRC2::Parser; sub new { my $self = bless( {
                                                                                                  'description' => '/^[^\\\\s ,\\\\x00 \\\\x0A \\\\x0D \\\\x07]+/',
                                                                                                  'lookahead' => 0,
                                                                                                  'rdelim' => '/',
-                                                                                                 'line' => 56,
+                                                                                                 'line' => 55,
                                                                                                  'mod' => '',
                                                                                                  'ldelim' => '/'
                                                                                                }, 'Parse::RecDescent::Token' )
@@ -4989,7 +4988,7 @@ package Net::IRC2::Parser; sub new { my $self = bless( {
                                                                 ],
                                                      'name' => 'chstring',
                                                      'vars' => '',
-                                                     'line' => 56
+                                                     'line' => 55
                                                    }, 'Parse::RecDescent::Rule' ),
                               '_alternation_1_of_production_1_of_rule_mask' => bless( {
                                                                                         'impcount' => 0,
@@ -5011,7 +5010,7 @@ package Net::IRC2::Parser; sub new { my $self = bless( {
                                                                                                                                     'hashname' => '__STRING1__',
                                                                                                                                     'description' => '\'#\'',
                                                                                                                                     'lookahead' => 0,
-                                                                                                                                    'line' => 62
+                                                                                                                                    'line' => 61
                                                                                                                                   }, 'Parse::RecDescent::Literal' )
                                                                                                                          ],
                                                                                                               'line' => undef
@@ -5030,15 +5029,15 @@ package Net::IRC2::Parser; sub new { my $self = bless( {
                                                                                                                                     'hashname' => '__STRING1__',
                                                                                                                                     'description' => '\'$\'',
                                                                                                                                     'lookahead' => 0,
-                                                                                                                                    'line' => 62
+                                                                                                                                    'line' => 61
                                                                                                                                   }, 'Parse::RecDescent::Literal' )
                                                                                                                          ],
-                                                                                                              'line' => 62
+                                                                                                              'line' => 61
                                                                                                             }, 'Parse::RecDescent::Production' )
                                                                                                    ],
                                                                                         'name' => '_alternation_1_of_production_1_of_rule_mask',
                                                                                         'vars' => '',
-                                                                                        'line' => 62
+                                                                                        'line' => 61
                                                                                       }, 'Parse::RecDescent::Rule' ),
                               'servername' => bless( {
                                                        'impcount' => 0,
@@ -5061,14 +5060,14 @@ package Net::IRC2::Parser; sub new { my $self = bless( {
                                                                                                    'description' => '/[\\\\w\\\\.\\\\-]+ /',
                                                                                                    'lookahead' => 0,
                                                                                                    'rdelim' => '/',
-                                                                                                   'line' => 35,
+                                                                                                   'line' => 34,
                                                                                                    'mod' => '',
                                                                                                    'ldelim' => '/'
                                                                                                  }, 'Parse::RecDescent::Token' ),
                                                                                           bless( {
                                                                                                    'hashname' => '__ACTION1__',
                                                                                                    'lookahead' => 0,
-                                                                                                   'line' => 36,
+                                                                                                   'line' => 35,
                                                                                                    'code' => '{
 	   chop $item[1] ;
 	   $return = $item[1] ;
@@ -5080,7 +5079,7 @@ package Net::IRC2::Parser; sub new { my $self = bless( {
                                                                   ],
                                                        'name' => 'servername',
                                                        'vars' => '',
-                                                       'line' => 35
+                                                       'line' => 34
                                                      }, 'Parse::RecDescent::Rule' ),
                               'nonwhite' => bless( {
                                                      'impcount' => 0,
@@ -5103,7 +5102,7 @@ package Net::IRC2::Parser; sub new { my $self = bless( {
                                                                                                  'description' => '/^[^\\\\x20 \\\\x00 \\\\x0D \\\\x0A]/',
                                                                                                  'lookahead' => 0,
                                                                                                  'rdelim' => '/',
-                                                                                                 'line' => 59,
+                                                                                                 'line' => 58,
                                                                                                  'mod' => '',
                                                                                                  'ldelim' => '/'
                                                                                                }, 'Parse::RecDescent::Token' )
@@ -5113,7 +5112,7 @@ package Net::IRC2::Parser; sub new { my $self = bless( {
                                                                 ],
                                                      'name' => 'nonwhite',
                                                      'vars' => '',
-                                                     'line' => 59
+                                                     'line' => 58
                                                    }, 'Parse::RecDescent::Rule' ),
                               '_alternation_1_of_production_1_of_rule_channel' => bless( {
                                                                                            'impcount' => 0,
@@ -5135,7 +5134,7 @@ package Net::IRC2::Parser; sub new { my $self = bless( {
                                                                                                                                        'hashname' => '__STRING1__',
                                                                                                                                        'description' => '\'#\'',
                                                                                                                                        'lookahead' => 0,
-                                                                                                                                       'line' => 62
+                                                                                                                                       'line' => 61
                                                                                                                                      }, 'Parse::RecDescent::Literal' )
                                                                                                                             ],
                                                                                                                  'line' => undef
@@ -5154,15 +5153,15 @@ package Net::IRC2::Parser; sub new { my $self = bless( {
                                                                                                                                        'hashname' => '__STRING1__',
                                                                                                                                        'description' => '\'&\'',
                                                                                                                                        'lookahead' => 0,
-                                                                                                                                       'line' => 62
+                                                                                                                                       'line' => 61
                                                                                                                                      }, 'Parse::RecDescent::Literal' )
                                                                                                                             ],
-                                                                                                                 'line' => 62
+                                                                                                                 'line' => 61
                                                                                                                }, 'Parse::RecDescent::Production' )
                                                                                                       ],
                                                                                            'name' => '_alternation_1_of_production_1_of_rule_channel',
                                                                                            'vars' => '',
-                                                                                           'line' => 62
+                                                                                           'line' => 61
                                                                                          }, 'Parse::RecDescent::Rule' ),
                               '_alternation_2_of_production_2_of_rule_from' => bless( {
                                                                                         'impcount' => 0,
@@ -5186,7 +5185,7 @@ package Net::IRC2::Parser; sub new { my $self = bless( {
                                                                                                                                     'hashname' => '__STRING1__',
                                                                                                                                     'description' => '\'@\'',
                                                                                                                                     'lookahead' => 0,
-                                                                                                                                    'line' => 62
+                                                                                                                                    'line' => 61
                                                                                                                                   }, 'Parse::RecDescent::Literal' ),
                                                                                                                            bless( {
                                                                                                                                     'subrule' => 'host',
@@ -5194,7 +5193,7 @@ package Net::IRC2::Parser; sub new { my $self = bless( {
                                                                                                                                     'implicit' => undef,
                                                                                                                                     'argcode' => undef,
                                                                                                                                     'lookahead' => 0,
-                                                                                                                                    'line' => 62
+                                                                                                                                    'line' => 61
                                                                                                                                   }, 'Parse::RecDescent::Subrule' )
                                                                                                                          ],
                                                                                                               'line' => undef
@@ -5202,7 +5201,7 @@ package Net::IRC2::Parser; sub new { my $self = bless( {
                                                                                                    ],
                                                                                         'name' => '_alternation_2_of_production_2_of_rule_from',
                                                                                         'vars' => '',
-                                                                                        'line' => 62
+                                                                                        'line' => 61
                                                                                       }, 'Parse::RecDescent::Rule' ),
                               'prefix' => bless( {
                                                    'impcount' => 0,
@@ -5226,13 +5225,13 @@ package Net::IRC2::Parser; sub new { my $self = bless( {
                                                                                                'hashname' => '__STRING1__',
                                                                                                'description' => '\':\'',
                                                                                                'lookahead' => 0,
-                                                                                               'line' => 19
+                                                                                               'line' => 18
                                                                                              }, 'Parse::RecDescent::Literal' ),
                                                                                       bless( {
                                                                                                'hashname' => '__DIRECTIVE1__',
                                                                                                'name' => '<commit>',
                                                                                                'lookahead' => 0,
-                                                                                               'line' => 19,
+                                                                                               'line' => 18,
                                                                                                'code' => '$commit = 1'
                                                                                              }, 'Parse::RecDescent::Directive' ),
                                                                                       bless( {
@@ -5241,12 +5240,12 @@ package Net::IRC2::Parser; sub new { my $self = bless( {
                                                                                                'implicit' => undef,
                                                                                                'argcode' => undef,
                                                                                                'lookahead' => 0,
-                                                                                               'line' => 19
+                                                                                               'line' => 18
                                                                                              }, 'Parse::RecDescent::Subrule' ),
                                                                                       bless( {
                                                                                                'hashname' => '__ACTION1__',
                                                                                                'lookahead' => 0,
-                                                                                               'line' => 20,
+                                                                                               'line' => 19,
                                                                                                'code' => '{ 
 	    $return = $Event->from( \':\' . $item{\'from\'} ) }'
                                                                                              }, 'Parse::RecDescent::Action' )
@@ -5256,7 +5255,7 @@ package Net::IRC2::Parser; sub new { my $self = bless( {
                                                               ],
                                                    'name' => 'prefix',
                                                    'vars' => '',
-                                                   'line' => 19
+                                                   'line' => 18
                                                  }, 'Parse::RecDescent::Rule' )
                             }
                }, 'Parse::RecDescent' );

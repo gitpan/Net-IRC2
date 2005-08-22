@@ -8,10 +8,10 @@ my $builder = Module::Build->new(
     dist_author         => 'Karl Y. Pradene <knotty@cpan.org>' ,
     dist_version_from   => 'lib/Net/IRC2.pm'                   ,
     requires => {
-	'perl'                  => '5.8.1' ,
-	'IO::Socket::INET'      =>      0  ,
-        'Parse::RecDescent'     =>      0  ,
-	'Test::More'            =>      0  ,
+	'perl'                  => '' ,
+	'IO::Socket::INET'      => '' ,
+        'Parse::RecDescent'     => '' ,
+	'Test::More'            => '' ,
     },
     add_to_cleanup      => [ 'Net-IRC2-*' ] ,
 ) ;

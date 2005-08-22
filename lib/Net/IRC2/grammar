@@ -3,7 +3,6 @@
     my $Event = undef       ;
     use vars qw( $VERSION ) ;
     $VERSION =              '0.23' ;
-
 }
 
 message: 

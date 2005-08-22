@@ -12,8 +12,8 @@ our @ISA       = qw( Exporter ) ;
 our @EXPORT_OK = qw( new      ) ;
 our @Export    = qw( new      ) ;
 
-use vars qw( $VERSION $DEBUG)   ;
-$VERSION =                       '0.23' ;
+use vars qw( $VERSION $DEBUG )  ;
+$VERSION =                       '0.27' ;
 $DEBUG   =                            0 ;
 
 
@@ -130,10 +130,6 @@ return un ARRAY of Net::IRC2::Connection objects
  
 =back
 
-=head1 AUTHOR
-
-Karl Y. Pradene, C<< <knotty@cpan.org>, irc://knotty@freenode.org/ >> 
-
 =head1 BUGS
 
 Please report any bugs or feature requests to
@@ -144,9 +140,13 @@ your bug as I make changes.
 
 =head1 SEE ALSO
 
-Perl modules working with IRC connections: Net::IRC, POE::Component::IRC
+Others Perl modules working with IRC connections: Net::IRC, POE::Component::IRC
 
-IRC Request For Comment 1459 L<http://www.ietf.org/rfc/rfc1459.txt?number=1459>
+IRC Request For Comment 1459 L<http://www.ietf.org/rfc/rfc1459.txt>
+
+=head1 AUTHOR
+
+Karl Y. Pradene, C<< <knotty@cpan.org>, irc://knotty@freenode.org/ >> 
 
 =head1 COPYRIGHT & LICENSE
 

@@ -22,7 +22,8 @@ $DEBUG      =                         0 ;
 sub new {
     my $class = shift                                                          ;
     my $self = bless { @_ }                                                    ;
-    $self->split_uri if exists $self->{'uri'} ;
+
+    $self->split_uri if exists $self->{'uri'}                                  ;
     my $sock = $self->socket( IO::Socket::INET->new( PeerAddr => $self->server ,
 						     PeerPort => $self->port   ,
 						     Proto    => 'tcp'         )
@@ -42,21 +43,18 @@ sub do_one_loop {
     my $self = shift;
     my ( $sock, $parser ) = ( $self->socket, $self->parser );
     my $line = <$sock>;
-    my $event = $parser->message( $line ) or warn "Parse error\n$line" and return 0 ;
-    if ( $event->command eq 'PING' ) {
-	$sock->send( 'PONG ' . $event->trailing. "\n" )                             ;
-    }
+    my $event = $parser->message( $line ) or warn "\nParse error\n$line|\n" and return 1 ;
+    $self->pong( $event->trailing ) if $event->command eq 'PING'                    ;
+    $event->polish_up;
     $event->{'_parent'} = $self                                                     ;
     $self->chans( scalar $event->trailing ) if $event->command eq 'JOIN'            ;
     if (      defined $self->{ 'callback' }{ $event->command } ) {
 	           &{ $self->{ 'callback' }{ $event->command } } ( $self, $event )  ;
     } elsif ( defined $self->{ 'callback' }{   'WaterGate'   } ) {
-	           &{ $self->{ 'callback' }{   'WaterGate'   } } ( $self, $event )  ;
-    }
+	           &{ $self->{ 'callback' }{   'WaterGate'   } } ( $self, $event )  }
     no strict 'refs'                                                                ;
     &{'cb'.$event->command}($self, $event) if defined &{'cb'.$event->command}       ;
-    return $event;
-}
+    return $event                                                                   }
 
 sub split_uri {
     # http://www.w3.org/Addressing/draft-mirashi-url-irc-01.txt
@@ -76,24 +74,23 @@ sub sl        {
  ##############
 # Commands IRC #
  ##############
-sub mode    { shift->sl(  'MODE'   . " @_"   ) }
-sub join    { shift->sl(  'JOIN'   . " @_"   ) }
-sub privmsg { shift->sl( 'PRIVMSG' . " @_"   ) }
-sub notice  { shift->sl( 'NOTICE'  . " @_"   ) }
-sub part    { shift->sl(  'PART'   . " @_"   ) }
-sub whois   { shift->sl(  'WHOIS'  . " @_"   ) }
 
+{   my ( $code, $name ) = q{ sub { shift->sl( 'COMMAND' . " @_" ) } } ;
+    no strict 'refs'                                                ;
+    foreach $name qw( mode privmsg notice part whois join pong ) {
+	$_ = $code ; s/COMMAND/$name/ ; *{$name} = eval      } }
 
 ############
 # Accessor #
 ############
-sub nick     { return   $_[0]->{  'Nick'  } = $_[1] || $_[0]->{  'Nick'  } || die 'no nick'    }
-sub pass     { return   $_[0]->{'Password'} = $_[1] || $_[0]->{'Password'} || '2 young 2 die'  }
-sub port     { return   $_[0]->{  'Port'  } = $_[1] || $_[0]->{  'Port'  } || 6667             }
+sub nick     { return   $_[0]->{  'nick'  } = $_[1] || $_[0]->{  'nick'  }
+	                                            || $ENV{'USER'}        || 'nonick'         }
+sub pass     { return   $_[0]->{'password'} = $_[1] || $_[0]->{'password'} || '2 young 2 die'  }
+sub port     { return   $_[0]->{  'port'  } = $_[1] || $_[0]->{  'port'  } || 6667             }
 sub user     { return   $_[0]->{  'user'  } = $_[1] || $_[0]->{  'user'  } || 'void'           }
 sub realname { return   $_[0]->{'realname'} = $_[1] || $_[0]->{'realname'} || 'use Net::IRC2'  }
-sub server   { return   $_[0]->{ 'Server' } = $_[1] || $_[0]->{ 'Server' } || 'localhost'      }
-sub socket   { return   $_[0]->{ 'socket' } = $_[1] || $_[0]->{ 'socket' } || undef            }
+sub server   { return   $_[0]->{ 'server' } = $_[1] || $_[0]->{ 'server' } || 'localhost'      }
+sub socket   { return   $_[0]->{ 'socket' } = $_[1] || $_[0]->{ 'socket' }                     }
 sub parser   { return   $_[0]->{ 'parser' } = $_[1] || $_[0]->{ 'parser' }                     }
 sub grammar  { return   $_[0]->{'grammar' } = $_[1] || $_[0]->{'grammar' }                     }
 sub callback { return   $_[0]->{'callback'} = $_[1]   if ref $_[1] eq 'CODE'                   ;
@@ -196,13 +193,21 @@ Return the socket assigned to the connection
 
 =item join()
 
-=item part
+Take one argument: a chan name
+ $conn->join('#chan');
+
+=item part()
+
+Take one argument: a chan name
+ $conn->part('#chan');
 
 =item privmsg()
 
 =item notice()
 
-=item whois
+=item whois()
+
+=item pong()
 
 =back
 
@@ -228,9 +233,11 @@ Return the socket assigned to the connection
 
 =head1 SEE ALSO
 
-Perl modules working with IRC connections: Net::IRC, POE::Component::IRC
+Net::IRC2, Net::IRC2::Event
 
-IRC Request For Comment 1459 L<http://www.ietf.org/rfc/rfc1459.txt?number=1459>
+=head1 AUTHOR
+
+Karl Y. Pradene, C<< <knotty@cpan.org>, irc://knotty@freenode.org/ >> 
 
 =head1 COPYRIGHT & LICENSE
 

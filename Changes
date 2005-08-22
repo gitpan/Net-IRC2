@@ -1,5 +1,9 @@
 Revision history for Net-IRC2
 
+0.27	08/22/2005
+	Create Net::IRC2::Chan
+	add Event::polish_up
+	
 0.23    08/20/2005
 	Fix version number problem
 
